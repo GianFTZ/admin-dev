@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { CompanyModule } from './company/company.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { PrismaModule } from './company/infra/prisma/prisma.module';
 
 @Module({
   imports: [
     CompanyModule,
+    PrismaModule,
     MailerModule.forRoot({
       transport: {
         host: process.env.EMAIL_HOST, //host smtp
@@ -25,4 +27,4 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
   ],
 })
-export class AppModule {}
+export class AppModule { }

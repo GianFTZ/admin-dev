@@ -3,9 +3,11 @@ import { CompanyController } from './presentation/controllers/company.controller
 import { CompanyService } from './presentation/services/company.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PrismaService } from './infra/prisma/prisma.service';
+import { PrismaModule } from './infra/prisma/prisma.module';
 
 @Module({
   imports: [
+    PrismaModule,
     MailerModule.forRoot({
       transport: {
         host: process.env.EMAIL_HOST, //host smtp
@@ -27,6 +29,6 @@ import { PrismaService } from './infra/prisma/prisma.service';
   ],
   controllers: [CompanyController],
   providers: [CompanyService, PrismaService],
-  
+
 })
-export class CompanyModule {}
+export class CompanyModule { }
