@@ -13,6 +13,8 @@ services:
       - 3000:3000
     depends_on:
       - redis
+    networks:
+      - dev
   redis:
     image: redis
     ports:
@@ -30,7 +32,12 @@ services:
       - 5432:5432
     volumes:
       - vas-admin:/var/lib/postgresql/data
+    networks:
+      - dev
 
+networks:
+  dev:
+    driver: bridge
 volumes:
   redis:
     driver: local
