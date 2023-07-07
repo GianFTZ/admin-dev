@@ -34,3 +34,4 @@ services:
 volumes:
   redis:
     driver: local
+  vas-admin:

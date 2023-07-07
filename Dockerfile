@@ -10,6 +10,8 @@ RUN yarn
 
 COPY --chown=node:node . .
 
+RUN npm run prisma:generate
+
 USER node
 
 
