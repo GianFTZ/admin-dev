@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, Logger } from "@nestjs/common";
 import { InviteCompanyDto, InviteUserDto, CreateCompanyDto } from "../models";
 import { PrismaService } from "src/company/infra/prisma/prisma.service";
 import { MailerService } from "@nestjs-modules/mailer";
@@ -48,21 +48,26 @@ export class CompanyService {
           throw new ForbiddenException('Enterprise already exists')
         }
       }
-      throw error
+      throw new BadRequestException('Something went wrong while trying to create a company')
     }
   }
 
   public async read() {
-    const companies = await this.prisma.enterprise.findMany({
-      select: {
-        id: true,
-        name: true,
-        nickname: true,
-        registration: true,
-        active: true
-      }
-    })
-    return companies
+    try {   
+      const companies = await this.prisma.enterprise.findMany({
+        select: {
+          id: true,
+          name: true,
+          nickname: true,
+          registration: true,
+          active: true
+        }
+      })
+      return companies
+    }
+    catch (error) {
+      throw new BadRequestException('Something went wrong while trying to read companies')
+    }
   }
 
 }

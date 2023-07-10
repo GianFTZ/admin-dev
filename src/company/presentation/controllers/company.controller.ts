@@ -1,7 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, HttpStatus, Post, Res } from '@nestjs/common';
 import { InviteCompanyDto, InviteUserDto } from '../models/invite-company';
 import { CompanyService } from '../services/company.service';
 import { CreateCompanyDto } from '../models';
+import { Response } from 'express';
 
 @Controller('/company')
 export class CompanyController {
@@ -22,14 +23,33 @@ export class CompanyController {
   }
 
   @Post('/create')
-  public async create(
-    @Body() createCompanyDto: CreateCompanyDto
-  ) {
-    return this.companyService.create(createCompanyDto)
+  public async create(@Body() createCompanyDto: CreateCompanyDto, @Res() res: Response) {
+    const company = await this.companyService.create(createCompanyDto)
+    if (company ) {
+      res.status(HttpStatus.OK).json(company)
+    }
+    else if (company instanceof ForbiddenException) {
+      res.status(HttpStatus.FORBIDDEN).json({
+        message: "Enterprise already exists"
+      })
+    }
+    else if(company instanceof BadRequestException){
+      res.status(HttpStatus.BAD_REQUEST).json({
+        message: "Something went wrong while trying to create a company"
+      })
+    }
   }
 
   @Post('/read')
-  public async read() {
-    return this.companyService.read()
+  public async read(@Res() res: Response) {
+    const companies = await this.companyService.read()
+    if (companies.length > 0) {
+      res.status(HttpStatus.OK).json(companies)
+    }
+    else if(companies instanceof BadRequestException) {
+      res.status(HttpStatus.BAD_REQUEST).json({
+        message: "Something went wrong while trying to read companies"
+      })
+    }
   }
 }
