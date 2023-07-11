@@ -1,9 +1,9 @@
 import { BadRequestException, ForbiddenException, Injectable, Logger } from "@nestjs/common";
 import { InviteCompanyDto, InviteUserDto, CreateCompanyDto } from "../models";
-import { PrismaService } from "src/company/infra/prisma/prisma.service";
 import { MailerService } from "@nestjs-modules/mailer";
 import { codeVerificationTemplate } from "../view/code-verification-template";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { PrismaService } from "../../infra/prisma/prisma.service";
 
 @Injectable()
 export class CompanyService {
@@ -66,6 +66,7 @@ export class CompanyService {
       return companies
     }
     catch (error) {
+      Logger.error(error)
       throw new BadRequestException('Something went wrong while trying to read companies')
     }
   }
