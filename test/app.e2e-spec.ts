@@ -43,7 +43,6 @@ describe('AppController (e2e)', () => {
         active: true
       }
       const response = await request(app.getHttpServer()).post('/company/create').send(JSON.stringify(dto))
-      console.log(response.status)
       expect(response.status).toEqual(400)
     })
     test('should return 400 if nickname was not provided', async () => {
@@ -64,7 +63,6 @@ describe('AppController (e2e)', () => {
         active: true
       }
       const response = await request(app.getHttpServer()).post('/company/create').send(JSON.stringify(dto))
-      console.log(`${response.error}`)
       expect(response.status).toEqual(400)
     })
     test('should return 400 if active was not provided', async () => {
