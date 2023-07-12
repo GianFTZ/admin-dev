@@ -40,6 +40,14 @@ export class CompanyService {
           active: true
         }
       })
+      const isValid = await this.prisma.enterprise.findUnique({
+        where: {
+          name: dto.name
+        },
+        select: {
+          name: true,
+        }
+      })
       return company
     }
     catch (error) {
