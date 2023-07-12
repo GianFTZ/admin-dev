@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, Logger } from "@nestjs/common";
-import { InviteCompanyDto, InviteUserDto, CreateCompanyDto } from "../models";
+import { InviteCompanyDto, CreateCompanyDto } from "../models";
 import { MailerService } from "@nestjs-modules/mailer";
 import { codeVerificationTemplate } from "../view/code-verification-template";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
@@ -12,16 +12,16 @@ export class CompanyService {
     private mailerService: MailerService
   ) { }
 
-  public async invite(company: InviteCompanyDto, user: InviteUserDto) {
-    Logger.log(`enviando e-mail convite para ${user.email} `)
+  public async invite(company: InviteCompanyDto ) {
+    Logger.log(`enviando e-mail convite para ${company.email} `)
     const mailData = {
       from: "routeflat@vilesoft.com.br",
-      to: user.email,
+      to: company.email,
       subject: "Verification code",
       html: codeVerificationTemplate("codigo fake")
     }
-    await this.mailerService.sendMail(mailData)
-    Logger.log(`e-mail enviado para ${user.email}`)
+    Logger.log(await this.mailerService.sendMail(mailData))
+    Logger.log(`e-mail enviado para ${company.email}`)
   }
 
   public async create(dto: CreateCompanyDto) {
