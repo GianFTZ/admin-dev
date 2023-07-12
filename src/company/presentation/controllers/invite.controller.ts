@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, ForbiddenException, HttpStatus, Logger, Post, Query, Res, UseFilters } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpStatus, Logger, Post, Query, Res, UseFilters } from '@nestjs/common';
 import { CompanyService } from '../services/company.service';
 import { HttpExceptionFilter } from 'src/common/exception';
 
@@ -9,7 +9,7 @@ export class InviteController {
   ) { }
 
 
-  @Post()
+  @Get()
   @UseFilters(new HttpExceptionFilter())
   public async invite(
     @Query("token") token: string,
