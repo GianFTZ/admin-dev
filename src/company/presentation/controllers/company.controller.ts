@@ -49,5 +49,10 @@ export class CompanyController {
         message: "Something went wrong while trying to read companies"
       })
     }
+    else {
+      res.status(HttpStatus.NOT_FOUND).json({
+        message: 'No companies registered in the database'
+      })
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { InviteCompanyDto, CreateCompanyDto } from "../models";
 import { MailerService } from "@nestjs-modules/mailer";
 import { codeVerificationTemplate } from "../view/code-verification-template";
@@ -61,11 +61,14 @@ export class CompanyService {
           active: true
         }
       })
+      if (companies.length === 0) { 
+        throw new NotFoundException('No companies registered in the database')
+      }
       return companies
     }
     catch (error) {
       Logger.error(error)
-      throw new BadRequestException('Something went wrong while trying to read companies')
+      throw error
     }
   }
 
