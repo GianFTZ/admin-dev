@@ -40,21 +40,11 @@ export class CompanyService {
           active: true
         }
       })
-      const isValid = await this.prisma.enterprise.findUnique({
-        where: {
-          name: dto.name
-        },
-        select: {
-          name: true,
-        }
-      })
       return company
     }
     catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new ForbiddenException('Enterprise already exists')
-        }
+      if (error.code === 'P2002') {
+        throw new ForbiddenException('Enterprise already exists')
       }
       throw new BadRequestException('Something went wrong while trying to create a company')
     }
