@@ -62,7 +62,15 @@ export class CompanyController {
   }
 
   @Post("/collaborators/filter")
-  public async getCollaboratorsFilter(@Body() dto: filterCollaboratorDto){
-   return await this.companyService.filterCollaborators(dto)
+  public async getCollaboratorsFilter(@Body() dto: filterCollaboratorDto, @Res() res: Response){
+    const colaboratorsFiltered = await this.companyService.filterCollaborators(dto)
+    if (colaboratorsFiltered.length > 0) {
+      res.status(HttpStatus.OK).json(colaboratorsFiltered)
+    }
+    else {
+      res.status(HttpStatus.NOT_FOUND).json({
+        message: "No colaborators found"
+      })
+    }
   }
 }
