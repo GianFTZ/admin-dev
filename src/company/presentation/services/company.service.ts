@@ -5,7 +5,9 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { PrismaService } from "../../infra/prisma/prisma.service";
 import { createTransport } from "nodemailer";
 import { JwtService } from "@nestjs/jwt";
+import axios from 'axios'
 import { transporter } from "src/common/mail";
+import { filterCollaboratorDto, getCollaboratorDto } from "../models/get-collaborator";
 
 @Injectable()
 export class CompanyService {
@@ -37,34 +39,40 @@ export class CompanyService {
   }
 
   public async verifyInvite(token: string) {
-    const pendingUser = this.jwtService.decode(token) as any
+    const { data: { email, name } } = await axios.post<{ email: string, name: string }>(process.env.VAS_API_URL, {
+      refreshToken: token
+    })
+    
     const findUser = await this.prisma.pendingColaborator.findFirst({
       where: {
-        email: pendingUser.email
+        email: email
       }
     })
-    if(!findUser) {
+    const enterprise = await this.prisma.enterprise.findUnique({
+      where: { id: findUser.enterpriseId }
+    })
+    if(!findUser || !enterprise) {
       throw new Error("do later")
     }
     await this.prisma.enterprise.update({
       where: {
-        name: pendingUser.name
+        name: enterprise.name
       },
       data: {
         colaborators: {
           create: {
-            email: pendingUser.email,
-            name: "gianzito"
+            email: email,
+            name: name
           }
         }
       }
     })
     await this.prisma.pendingColaborator.deleteMany({
-      where: { email: pendingUser.email }
+      where: { email: email }
     })
-    return await this.prisma.enterprise.findMany({ where: { name: pendingUser.name }, include: {
+    return await this.prisma.enterprise.findMany({ where: { name: enterprise.name }, include: {
       colaborators: true
-    } })
+    }})
   }
 
   public async create(dto: CreateCompanyDto) {
@@ -115,4 +123,31 @@ export class CompanyService {
     }
   }
 
+  public async getCollaborators(dto: getCollaboratorDto) {
+    return await this.prisma.enterprise.findMany({
+      where: {
+        name: dto.companyName
+      },
+      select: {
+        colaborators: true
+      }
+    })
+  }
+
+  public async filterCollaborators(dto: filterCollaboratorDto) {
+    return await this.prisma.enterprise.findMany({
+      where: {
+        name: dto.companyName
+      },
+      select: {
+        colaborators: {
+          where: {
+            name: {
+              startsWith: dto.filter
+            }
+          }
+        }
+      }
+    })
+  }
 }

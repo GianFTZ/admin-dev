@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, ForbiddenException, HttpStatus, Post, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpStatus, Post, Res } from '@nestjs/common';
 import { InviteCompanyDto } from '../models/invite-company';
 import { CompanyService } from '../services/company.service';
 import { CreateCompanyDto } from '../models';
 import { Response } from 'express';
+import { filterCollaboratorDto, getCollaboratorDto } from '../models/get-collaborator';
 
 @Controller('/company')
 export class CompanyController {
@@ -54,5 +55,15 @@ export class CompanyController {
         message: 'No companies registered in the database'
       })
     }
+  }
+
+  @Get("/collaborators")
+  public getCollaborators(@Body() dto: getCollaboratorDto) {
+    return this.companyService.getCollaborators(dto)
+  }
+
+  @Post("/collaborators/filter")
+  public getCollaboratorsFilter(@Body() dto: filterCollaboratorDto){
+    return this.companyService.filterCollaborators(dto)
   }
 }
