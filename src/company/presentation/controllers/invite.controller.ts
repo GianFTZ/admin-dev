@@ -1,7 +1,6 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpStatus, Logger, Post, Query, Redirect, Res, UseFilters } from '@nestjs/common';
-import { CompanyService } from '../services/company.service';
-import { HttpExceptionFilter } from 'src/common/exception';
-import axios from 'axios'
+import { Controller, Get, Query, Redirect, UseFilters } from '@nestjs/common';
+import { CompanyService } from '../services';
+import { HttpExceptionFilter } from '../../../common';
 
 @Controller('/invite')
 export class InviteController {

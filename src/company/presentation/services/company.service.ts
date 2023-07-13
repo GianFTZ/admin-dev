@@ -1,13 +1,10 @@
-import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { InviteCompanyDto, CreateCompanyDto } from "../models";
+import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { MailerService } from "@nestjs-modules/mailer";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
-import { PrismaService } from "../../infra/prisma/prisma.service";
-import { createTransport } from "nodemailer";
 import { JwtService } from "@nestjs/jwt";
 import axios from 'axios'
-import { transporter } from "src/common/mail";
-import { filterCollaboratorDto, getCollaboratorDto } from "../models/get-collaborator";
+import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto  } from "../models";
+import { PrismaService } from "../../infra";
+import { transporter } from "../../../common";
 
 @Injectable()
 export class CompanyService {

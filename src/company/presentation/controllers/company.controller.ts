@@ -1,9 +1,8 @@
 import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpStatus, Post, Res } from '@nestjs/common';
-import { InviteCompanyDto } from '../models/invite-company';
-import { CompanyService } from '../services/company.service';
-import { CreateCompanyDto } from '../models';
 import { Response } from 'express';
-import { filterCollaboratorDto, getCollaboratorDto } from '../models/get-collaborator';
+import { CompanyService } from '../services';
+import { CreateCompanyDto, InviteCompanyDto, filterCollaboratorDto,  getCollaboratorDto } from '../models';
+
 
 @Controller('/company')
 export class CompanyController {
@@ -63,7 +62,7 @@ export class CompanyController {
   }
 
   @Post("/collaborators/filter")
-  public getCollaboratorsFilter(@Body() dto: filterCollaboratorDto){
-    return this.companyService.filterCollaborators(dto)
+  public async getCollaboratorsFilter(@Body() dto: filterCollaboratorDto){
+   return await this.companyService.filterCollaborators(dto)
   }
 }

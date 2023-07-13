@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { CompanyModule } from './company/company.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { PrismaModule } from './company/infra/prisma/prisma.module';
+import { CompanyModule } from './company/company.module';
+import { PrismaModule } from './company/infra';
 
 @Module({
   imports: [
