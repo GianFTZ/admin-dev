@@ -116,6 +116,34 @@ describe('AppController (e2e)', () => {
     })
   })
 
+  describe('GET /company/collaborators', () => { 
+    test('should return 200 and get all colaborators', async () => { 
+       await prisma.enterprise.update({
+        where: {
+          name: "valid_company"
+        },
+        data: {
+          colaborators: {
+            create: {
+              name: "valid_colaborator2_name",
+              email: "valid_colaborator2@email.com"
+            }
+          }
+        }
+      })
+      const response = await request(app.getHttpServer()).get('/company/collaborators').send({
+        companyName: "valid_company"
+      })
+      expect(response.status).toEqual(200)
+    })
+    test('should return 404 if no colaborator was found', async () => { 
+      const response = await request(app.getHttpServer()).get('/company/collaborators').send({
+        companyName: "invalid_company"
+      })
+      expect(response.status).toEqual(404)
+    })
+  })
+
   describe('POST /company/read', () => {
     test('should return 200 and read all companies registered', async () => {
       const response = await request(app.getHttpServer()).post('/company/read')
