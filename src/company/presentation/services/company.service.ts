@@ -62,7 +62,7 @@ export class CompanyService {
         colaborators: {
           create: {
             email: email,
-            name: name
+            name: name.toLowerCase(),
           }
         }
       }
@@ -109,7 +109,8 @@ export class CompanyService {
           name: true,
           nickname: true,
           registration: true,
-          active: true
+          active: true,
+          colaborators: true
         }
       })
       if (companies.length === 0) { 
