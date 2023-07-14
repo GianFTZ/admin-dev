@@ -1,7 +1,8 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpStatus, Logger, Post, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Logger, NotFoundException, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { CompanyService } from '../services';
-import { CreateCompanyDto, InviteCompanyDto, filterCollaboratorDto,  getCollaboratorDto } from '../models';
+import { CreateCompanyDto, InviteCompanyDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
+import { NotFoundError } from 'rxjs';
 
 
 @Controller('/company')
@@ -81,5 +82,25 @@ export class CompanyController {
       })
     }
     res.status(HttpStatus.OK).json(colaboratorsFiltered)
+  }
+
+  @Delete("/collaborators/remove")
+  public async removeCollaborators(@Body() dto: removeCollaboratorDto, @Res() res: Response) { 
+    const deletedColaborator = await this.companyService.removeCollaborators(dto)
+    Logger.log(deletedColaborator)
+    res.status(HttpStatus.OK).json(`Colaborator ${deletedColaborator[0].name} removed successfully`)
+    // if (deletedColaborator.length === 0) {
+    //   res.status(HttpStatus.BAD_REQUEST).json({
+    //     message: "Something went wrong while trying to remove colaborator"
+    //   })
+    // }
+    // else if (deletedColaborator instanceof NotFoundException) {
+    //   res.status(HttpStatus.NOT_FOUND).json({
+    //     message: "Colaborator not found in database to remove"
+    //   })
+    // }
+    // else { 
+    //   res.status(HttpStatus.OK).json(`Colaborator ${deletedColaborator[0].name} removed successfully`)
+    // }
   }
 }
