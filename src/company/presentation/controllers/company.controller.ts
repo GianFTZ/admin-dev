@@ -18,6 +18,10 @@ export class CompanyController {
   public async invite(
     @Body() inviteCompanyDto: InviteCompanyDto,
   ) {
+    Logger.log({InviteCompanyDto: {
+      name: inviteCompanyDto.name,
+      email: inviteCompanyDto.email,
+    }})
     return this.companyService.invite(inviteCompanyDto)
   }
 
@@ -57,7 +61,7 @@ export class CompanyController {
     }
   }
 
-  @Get("/collaborators")
+  @Post("/collaborators")
   public async getCollaborators(@Body() dto: getCollaboratorDto, @Res() res: Response) {
     const colaborators = await this.companyService.getCollaborators(dto)
     if(colaborators.length === 0) {
