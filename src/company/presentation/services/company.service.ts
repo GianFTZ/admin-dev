@@ -17,6 +17,7 @@ export class CompanyService {
   public async invite(company: InviteCompanyDto ) {
     Logger.log(`enviando e-mail convite para ${company.email} `)
     const token = await this.jwtService.signAsync({ email: company.email, name: company.name })
+    Logger.log(`email: ${JSON.stringify(this.jwtService.decode(token))}`)
     const mailData = {
       from: `${process.env.EMAIL_USER}`,
       to: company.email,
@@ -28,11 +29,14 @@ export class CompanyService {
     await this.prisma.pendingColaborator.create({
       data: {
         Enterprise: {
-          connect: {name: company.name}
+          connect: {
+            name: company.name
+          }
         },
         email: company.email
       }
     })
+    Logger.log(await this.prisma.pendingColaborator.findMany())
   }
 
   public async verifyInvite(token: string) {

@@ -13,9 +13,9 @@ datasource db {
 
 model Enterprise {
   id                  String               @id @default(uuid())
-  name                String               @unique() @db.Char(100)
-  registration        String               @db.Char(50)
-  nickname            String               @db.Char(50)
+  name                String               @unique() 
+  registration        String               
+  nickname            String               
   active              Boolean
   insertAt            DateTime             @default(now()) @map("insert_at")
   updateAt            DateTime             @default(now()) @map("update_at")
@@ -25,16 +25,17 @@ model Enterprise {
 
 model Colaborator {
   id           String      @id @default(uuid())
-  name         String      @db.Char(100)
-  email        String      @db.Char(256)
+  name         String     
+  email        String      
   roles        Role[]
   Enterprise   Enterprise? @relation(fields: [enterpriseId], references: [id])
+  invitedAt    DateTime @default(now()) @map("invited_at")
   enterpriseId String?
 }
 
 model PendingColaborator {
   id           String      @id @default(uuid())
-  email        String      @db.Char(256)
+  email        String 
   Enterprise   Enterprise? @relation(fields: [enterpriseId], references: [id])
   enterpriseId String?
 

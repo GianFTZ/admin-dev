@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpStatus, Post, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpStatus, Logger, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { CompanyService } from '../services';
 import { CreateCompanyDto, InviteCompanyDto, filterCollaboratorDto,  getCollaboratorDto } from '../models';
@@ -17,6 +17,10 @@ export class CompanyController {
   public async invite(
     @Body() inviteCompanyDto: InviteCompanyDto,
   ) {
+    Logger.log({InviteCompanyDto: {
+      name: inviteCompanyDto.name,
+      email: inviteCompanyDto.email,
+    }})
     return this.companyService.invite(inviteCompanyDto)
   }
 
@@ -56,7 +60,7 @@ export class CompanyController {
     }
   }
 
-  @Get("/collaborators")
+  @Post("/collaborators")
   public async getCollaborators(@Body() dto: getCollaboratorDto, @Res() res: Response) {
     const colaborators = await this.companyService.getCollaborators(dto)
     if(colaborators.length === 0) {

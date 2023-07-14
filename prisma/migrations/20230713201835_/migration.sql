@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE "Colaborator" ALTER COLUMN "name" SET DATA TYPE TEXT,
+ALTER COLUMN "email" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Enterprise" ALTER COLUMN "name" SET DATA TYPE TEXT,
+ALTER COLUMN "registration" SET DATA TYPE TEXT,
+ALTER COLUMN "nickname" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "pending_colaborator" ALTER COLUMN "email" SET DATA TYPE TEXT;
