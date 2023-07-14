@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundEx
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtService } from "@nestjs/jwt";
 import axios from 'axios'
-import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto  } from "../models";
+import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto  } from "../models";
 import { PrismaService } from "../../infra";
 import { transporter } from "../../../common";
 
@@ -14,7 +14,7 @@ export class CompanyService {
     private jwtService: JwtService
   ) { }
 
-  public async invite(company: InviteCompanyDto ) {
+  public async invite(company: InviteCompanyDto) {
     Logger.log(`enviando e-mail convite para ${company.email} `)
     const token = await this.jwtService.signAsync({ email: company.email, name: company.name })
     const mailData = {
@@ -23,12 +23,12 @@ export class CompanyService {
       subject: "Invite Link",
       text: `${process.env.OUR_URL}/invite?token=${token}`
     }
-    Logger.log({token})
+    Logger.log({ token })
     Logger.log(await transporter.sendMail(mailData))
     await this.prisma.pendingColaborator.create({
       data: {
         Enterprise: {
-          connect: {name: company.name}
+          connect: { name: company.name }
         },
         email: company.email
       }
@@ -48,7 +48,7 @@ export class CompanyService {
     const enterprise = await this.prisma.enterprise.findUnique({
       where: { id: findUser.enterpriseId }
     })
-    if(!findUser || !enterprise) {
+    if (!findUser || !enterprise) {
       throw new Error("do later")
     }
     await this.prisma.enterprise.update({
@@ -67,9 +67,11 @@ export class CompanyService {
     await this.prisma.pendingColaborator.deleteMany({
       where: { email: email }
     })
-    return await this.prisma.enterprise.findMany({ where: { name: enterprise.name }, include: {
-      colaborators: true
-    }})
+    return await this.prisma.enterprise.findMany({
+      where: { name: enterprise.name }, include: {
+        colaborators: true
+      }
+    })
   }
 
   public async create(dto: CreateCompanyDto) {
@@ -99,7 +101,7 @@ export class CompanyService {
   }
 
   public async read() {
-    try {   
+    try {
       const companies = await this.prisma.enterprise.findMany({
         select: {
           id: true,
@@ -110,7 +112,7 @@ export class CompanyService {
           colaborators: true
         }
       })
-      if (companies.length === 0) { 
+      if (companies.length === 0) {
         throw new NotFoundException('No companies registered in the database')
       }
       return companies
@@ -147,5 +149,42 @@ export class CompanyService {
         }
       }
     })
+  }
+  public async removeCollaborators(dto: removeCollaboratorDto) {
+    try {
+      const company = await this.prisma.enterprise.findUnique({
+        where: {
+          name: dto.companyName
+        },
+        select: {
+          colaborators: true
+        }
+      })
+
+      const colaboratorIndex = company.colaborators.findIndex(colaborator => colaborator.name === dto.collaboratorName) + 1
+      if (colaboratorIndex == -1) { 
+        throw new NotFoundException("Colaborator not found in database to remove")
+      }
+      const deletedColaborator = company.colaborators.splice(colaboratorIndex, 1);
+      if (deletedColaborator.length === 0) { 
+        throw new BadRequestException("Something went wrong while trying to remove colaborator")
+      }
+      await this.prisma.enterprise.update({
+        where: {
+          name: dto.companyName
+        },
+        data: {
+          colaborators: {
+            delete: {
+              id: deletedColaborator[0].id
+            }
+          }
+        }
+      });
+      return deletedColaborator
+    }
+    catch (error) {
+      throw error
+    }
   }
 }

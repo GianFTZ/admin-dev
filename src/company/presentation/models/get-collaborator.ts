@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsEmail, IsString } from "class-validator";
 
 export class getCollaboratorDto {
   @IsString()
@@ -12,4 +12,13 @@ export class filterCollaboratorDto {
 
   @IsString()
   public filter: string
+}
+
+export class removeCollaboratorDto { 
+  @IsString()
+  public companyName: string
+
+  @IsString()
+  public collaboratorName: string
+
 }
