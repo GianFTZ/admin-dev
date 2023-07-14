@@ -87,20 +87,18 @@ export class CompanyController {
   @Delete("/collaborators/remove")
   public async removeCollaborators(@Body() dto: removeCollaboratorDto, @Res() res: Response) { 
     const deletedColaborator = await this.companyService.removeCollaborators(dto)
-    Logger.log(deletedColaborator)
-    res.status(HttpStatus.OK).json(`Colaborator ${deletedColaborator[0].name} removed successfully`)
-    // if (deletedColaborator.length === 0) {
-    //   res.status(HttpStatus.BAD_REQUEST).json({
-    //     message: "Something went wrong while trying to remove colaborator"
-    //   })
-    // }
-    // else if (deletedColaborator instanceof NotFoundException) {
-    //   res.status(HttpStatus.NOT_FOUND).json({
-    //     message: "Colaborator not found in database to remove"
-    //   })
-    // }
-    // else { 
-    //   res.status(HttpStatus.OK).json(`Colaborator ${deletedColaborator[0].name} removed successfully`)
-    // }
+    if (deletedColaborator.length === 0) {
+      res.status(HttpStatus.BAD_REQUEST).json({
+        message: "Something went wrong while trying to remove colaborator"
+      })
+    }
+    else if (deletedColaborator instanceof NotFoundException) {
+      res.status(HttpStatus.NOT_FOUND).json({
+        message: "Colaborator not found in database to remove"
+      })
+    }
+    else { 
+      res.status(HttpStatus.OK).json(`Colaborator ${deletedColaborator[0].name} removed successfully`)
+    }
   }
 }
