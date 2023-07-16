@@ -5,6 +5,7 @@ import axios from 'axios'
 import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto  } from "../models";
 import { PrismaService } from "../../infra";
 import { transporter } from "../../../common";
+import { randomUUID } from "node:crypto";
 
 @Injectable()
 export class CompanyService {
@@ -37,6 +38,26 @@ export class CompanyService {
       }
     })
     Logger.log(await this.prisma.pendingColaborator.findMany())
+  }
+
+  public async mock() {
+    Logger.log("b")
+    for(let i = 0; i < 1e2; i++) {
+      Logger.log("c")
+      await this.prisma.enterprise.update({
+        where: {
+          name: "gian-company"
+        },
+        data: {
+          colaborators: {
+            create: {
+              email: `${randomUUID()}${i}@mail.com`,
+              name: `${randomUUID()}${i}`
+            }q
+          }
+        }
+      })
+    }
   }
 
   public async verifyInvite(token: string) {
@@ -134,6 +155,17 @@ export class CompanyService {
       },
       select: {
         colaborators: true
+      }
+    })
+  }
+
+  public async getPendingCollaborators(dto: getCollaboratorDto) {
+    return await this.prisma.enterprise.findMany({
+      where: {
+        name: dto.companyName
+      },
+      select: {
+        pendingColaborators: true
       }
     })
   }

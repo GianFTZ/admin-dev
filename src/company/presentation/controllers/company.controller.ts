@@ -73,6 +73,25 @@ export class CompanyController {
 
   }
 
+  @Post("/collaborators/mock")
+  public async storeCollaborators() {
+    Logger.log("a")
+    return await this.companyService.mock()
+  }
+  
+
+  @Post("/collaborators/pending")
+  public async getPendingCollaborators(@Body() dto: getCollaboratorDto, @Res() res: Response) {
+    const colaborators = await this.companyService.getCollaborators(dto)
+    if(colaborators.length === 0) {
+      res.status(HttpStatus.NOT_FOUND).json({
+        message: "No colaborators found"
+      })
+    }
+    res.status(HttpStatus.OK).json(colaborators)
+
+  }
+
   @Post("/collaborators/filter")
   public async getCollaboratorsFilter(@Body() dto: filterCollaboratorDto, @Res() res: Response){
     const colaboratorsFiltered = await this.companyService.filterCollaborators(dto)
@@ -94,7 +113,7 @@ export class CompanyController {
     }
     else if (deletedColaborator instanceof NotFoundException) {
       res.status(HttpStatus.NOT_FOUND).json({
-        message: "Colaborator not found in database to remove"
+        message: "Colaborator notfound in database to remaove"
       })
     }
     else { 
