@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundEx
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtService } from "@nestjs/jwt";
 import axios from 'axios'
-import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto  } from "../models";
+import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto } from "../models";
 import { PrismaService } from "../../infra";
 import { transporter } from "../../../common";
 import { randomUUID } from "node:crypto";
@@ -42,7 +42,7 @@ export class CompanyService {
 
   public async mock() {
     Logger.log("b")
-    for(let i = 0; i < 1e2; i++) {
+    for (let i = 0; i < 1e2; i++) {
       Logger.log("c")
       await this.prisma.enterprise.update({
         where: {
@@ -53,7 +53,7 @@ export class CompanyService {
             create: {
               email: `${randomUUID()}${i}@mail.com`,
               name: `${randomUUID()}${i}`
-            }q
+            }
           }
         }
       })
@@ -64,7 +64,7 @@ export class CompanyService {
     const { data: { email, name } } = await axios.post<{ email: string, name: string }>(process.env.VAS_API_URL, {
       refreshToken: token
     })
-    
+
     const findUser = await this.prisma.pendingColaborator.findFirst({
       where: {
         email: email
@@ -198,11 +198,11 @@ export class CompanyService {
       })
 
       const colaboratorIndex = company.colaborators.findIndex(colaborator => colaborator.name === dto.collaboratorName) + 1
-      if (colaboratorIndex == -1) { 
+      if (colaboratorIndex == -1) {
         throw new NotFoundException("Colaborator not found in database to remove")
       }
       const deletedColaborator = company.colaborators.splice(colaboratorIndex, 1);
-      if (deletedColaborator.length === 0) { 
+      if (deletedColaborator.length === 0) {
         throw new BadRequestException("Something went wrong while trying to remove colaborator")
       }
       await this.prisma.enterprise.update({
