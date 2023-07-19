@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Logger, NotFoundException, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { CompanyService } from '../services';
-import { AssignRoleDto, CreateCompanyDto, CreateRoleDto, DeleteRoleDto, InviteCompanyDto, UpdateRoleNameDto, UpdateRolePermissonsDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
+import { AssignRoleDto, CreateCompanyDto, CreateRoleDto, DeleteRoleDto, GetRoleDto, InviteCompanyDto, UpdateRoleNameDto, UpdateRolePermissonsDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
 import { NotFoundError } from 'rxjs';
 
 
@@ -18,10 +18,6 @@ export class CompanyController {
   public async invite(
     @Body() inviteCompanyDto: InviteCompanyDto,
   ) {
-    Logger.log({InviteCompanyDto: {
-      name: inviteCompanyDto.name,
-      email: inviteCompanyDto.email,
-    }})
     return this.companyService.invite(inviteCompanyDto)
   }
 
@@ -43,7 +39,7 @@ export class CompanyController {
     }
   }
 
-  @Post('/read')
+  @Get('/read')
   public async read(@Res() res: Response) {
     const companies = await this.companyService.read()
     if (companies.length > 0) {
@@ -108,28 +104,33 @@ export class CompanyController {
     return await this.companyService.removeCollaborators(dto)
   }
 
-  @Post("collaborators/roles/create")
+  @Post("/roles/create")
   public async createRole(@Body() dto: CreateRoleDto) {
     return await this.companyService.createRole(dto)
   }
 
-  @Post("collaborators/roles/assign")
+  @Post("/roles/assign")
   public async updateCollaboratorsRole(@Body() dto: AssignRoleDto){
     return await this.companyService.assignRole(dto)
   }
 
-  @Post("collaborators/roles/permissions")
+  @Post("/roles/permissions")
   public async updateRolePermissons(@Body() dto: UpdateRolePermissonsDto){
     return await this.companyService.updateRolePermissions(dto)
   }
 
-  @Post("collaborators/roles/name")
+  @Post("/roles/name")
   public async updateRoleName(@Body() dto: UpdateRoleNameDto){
     return await this.companyService.updateRoleName(dto)
   }
 
-  @Delete("collaborators/roles")
+  @Delete("/roles")
   public async deleteRole(@Body() dto: DeleteRoleDto){
     return await this.companyService.deleteRole(dto)
+  }
+
+  @Post("/roles")
+  public async getRoles(@Body() dto: GetRoleDto){
+    return await this.companyService.getRoles(dto)
   }
 }

@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundEx
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtService } from "@nestjs/jwt";
 import axios from 'axios'
-import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto } from "../models";
+import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto, GetRoleDto } from "../models";
 import { PrismaService } from "../../infra";
 import { transporter } from "../../../common";
 import { randomUUID } from "node:crypto";
@@ -257,7 +257,7 @@ export class CompanyService {
                     name: dto.companyName
                   },
                   AND: {
-                    name: dto.name
+                    name: dto.roleName
                   }
                 },
                 select: {
@@ -276,7 +276,7 @@ export class CompanyService {
       select: {
         roles: {
           where: {
-            name: dto.name
+            name: dto.roleName
           },
           select: {
             name: true,
@@ -412,6 +412,17 @@ export class CompanyService {
             })).id
           }
         }
+      },
+      select: {
+        roles: true
+      }
+    })
+  }
+
+  public async getRoles(dto: GetRoleDto) {
+    return await this.prisma.enterprise.findFirst({
+      where: {
+        name: dto.companyName
       },
       select: {
         roles: true

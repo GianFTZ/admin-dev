@@ -53,3 +53,5 @@ model Role {
   Enterprise    Enterprise?  @relation(fields: [enterpriseId], references: [id])
   enterpriseId  String?
 }
+
+

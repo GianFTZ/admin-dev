@@ -21,7 +21,7 @@ export class UpdateRolePermissonsDto {
 
   @IsString()
   @IsNotEmpty()
-  name: string
+  roleName: string
 
   @IsArray()
   @IsNotEmpty()
@@ -77,3 +77,9 @@ export class DeleteRoleDto {
 }
 
 
+export class GetRoleDto {
+
+  @IsString()
+  @IsNotEmpty()
+  companyName: string
+}
