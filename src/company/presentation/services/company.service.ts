@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundEx
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtService } from "@nestjs/jwt";
 import axios from 'axios'
-import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto } from "../models";
+import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto } from "../models";
 import { PrismaService } from "../../infra";
 import { transporter } from "../../../common";
 import { randomUUID } from "node:crypto";
@@ -42,7 +42,7 @@ export class CompanyService {
 
   public async mock() {
     Logger.log("b")
-    for (let i = 0; i < 1e2; i++) {
+    for (let i = 0; i < 1e2; i++) { // 100
       Logger.log("c")
       await this.prisma.enterprise.update({
         where: {
@@ -188,39 +188,234 @@ export class CompanyService {
   }
   public async removeCollaborators(dto: removeCollaboratorDto) {
     try {
-      const company = await this.prisma.enterprise.findUnique({
-        where: {
-          name: dto.companyName
-        },
-        select: {
-          colaborators: true
-        }
-      })
-
-      const colaboratorIndex = company.colaborators.findIndex(colaborator => colaborator.name === dto.collaboratorName) + 1
-      if (colaboratorIndex == -1) {
-        throw new NotFoundException("Colaborator not found in database to remove")
-      }
-      const deletedColaborator = company.colaborators.splice(colaboratorIndex, 1);
-      if (deletedColaborator.length === 0) {
-        throw new BadRequestException("Something went wrong while trying to remove colaborator")
-      }
-      await this.prisma.enterprise.update({
+      const deletedColaborator = await this.prisma.enterprise.update({
         where: {
           name: dto.companyName
         },
         data: {
           colaborators: {
             delete: {
-              id: deletedColaborator[0].id
+              id: (await this.prisma.colaborator.findFirst({
+                where: {
+                  Enterprise: {
+                    name: dto.companyName
+                  },
+                  AND: {
+                    name: dto.collaboratorName
+                  }
+                },
+                select: {
+                  id: true
+                }
+              })).id
             }
-          }
+          },
+          updateAt: new Date()
+        },
+        select: {
+          updateAt: true
         }
-      });
+      })
       return deletedColaborator
     }
     catch (error) {
       throw error
     }
+  }
+
+  public async createRole(dto: CreateRoleDto) {
+    return await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        roles: {
+          create: {
+            name: dto.name,
+            permissions: dto.permissions,
+          }
+        }
+      },
+      select: {
+        roles: true
+      }
+    })
+  }
+
+  public async updateRolePermissions(dto: UpdateRolePermissonsDto) {
+    return await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        roles: {
+          update: {
+            where: {
+              id: (await this.prisma.role.findFirst({
+                where: {
+                  Enterprise: {
+                    name: dto.companyName
+                  },
+                  AND: {
+                    name: dto.name
+                  }
+                },
+                select: {
+                  id: true
+                }
+              })).id
+            },
+            data: {
+              permissions: {
+                set: dto.permissions
+              }
+            }
+          }
+        }
+      },
+      select: {
+        roles: {
+          where: {
+            name: dto.name
+          },
+          select: {
+            name: true,
+            permissions: true
+          }
+        }
+      }
+    })
+  }
+
+  public async updateRoleName(dto: UpdateRoleNameDto) {
+    return await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        roles: {
+          update: {
+            where: {
+              id: (await this.prisma.role.findFirst({
+                where: {
+                  Enterprise: {
+                    name: dto.companyName
+                  },
+                  AND: {
+                    name: dto.oldName
+                  }
+                },
+                select: {
+                  id: true
+                }
+              })).id
+            },
+            data: {
+              name: {
+                set: dto.name
+              }
+            }
+          }
+        }
+      },
+      select: {
+        roles: {
+          where: {
+            name: dto.name
+          },
+          select: {
+            name: true
+          }
+        }
+      }
+    })
+  }
+
+  public async assignRole(dto: AssignRoleDto) {
+    return await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        colaborators: {
+          update: {
+            where: {
+              id: (await this.prisma.colaborator.findFirst({
+                where: {
+                  Enterprise: {
+                    name: dto.companyName
+                  },
+                  AND: {
+                    name: dto.collaboratorName
+                  }
+                },
+                select: {
+                  id: true
+                }
+              })).id
+            },
+            data: {
+              roles: {
+                set: {
+                  id: (await this.prisma.role.findFirst({
+                    where: {
+                      Enterprise: {
+                        name: dto.companyName
+                      },
+                      AND: {
+                        name: dto.roleName
+                      },
+                    },
+                    select: {
+                      id: true
+                    }
+                  })).id
+                },
+              }
+            }
+          }
+        }
+      },
+      select: {
+        colaborators: {
+          where: {
+            name: dto.collaboratorName
+          },
+          select: {
+            roles: true
+          }
+        }
+      }
+    })
+  }
+
+  public async deleteRole(dto: DeleteRoleDto) {
+    return await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        roles: {
+          delete: {
+            id: (await this.prisma.role.findFirst({
+              where: {
+                Enterprise: {
+                  name: dto.companyName
+                },
+                AND: {
+                  name: dto.roleName
+                }
+              },
+              select: {
+                id: true
+              }
+            })).id
+          }
+        }
+      },
+      select: {
+        roles: true
+      }
+    })
   }
 }

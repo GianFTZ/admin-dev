@@ -13,38 +13,43 @@ datasource db {
 
 model Enterprise {
   id                  String               @id @default(uuid())
-  name                String               @unique() 
-  registration        String               
-  nickname            String               
+  name                String               @unique()
+  registration        String
+  nickname            String
   active              Boolean
   insertAt            DateTime             @default(now()) @map("insert_at")
   updateAt            DateTime             @default(now()) @map("update_at")
+  roles               Role[]
   colaborators        Colaborator[]
   pendingColaborators PendingColaborator[]
 }
 
 model Colaborator {
   id           String      @id @default(uuid())
-  name         String     
-  email        String      
+  name         String
+  email        String
   roles        Role[]
   Enterprise   Enterprise? @relation(fields: [enterpriseId], references: [id])
-  invitedAt    DateTime @default(now()) @map("invited_at")
+  invitedAt    DateTime    @default(now()) @map("invited_at")
   enterpriseId String?
 }
 
 model PendingColaborator {
   id           String      @id @default(uuid())
-  email        String 
+  email        String
   Enterprise   Enterprise? @relation(fields: [enterpriseId], references: [id])
   enterpriseId String?
+  invitedAt    DateTime    @default(now()) @map("invited_at")
 
   @@map("pending_colaborator")
 }
 
 model Role {
   id            String       @id @default(uuid())
+  name          String
   Colaborator   Colaborator? @relation(fields: [colaboratorId], references: [id])
   colaboratorId String?
   permissions   String[]
+  Enterprise    Enterprise?  @relation(fields: [enterpriseId], references: [id])
+  enterpriseId  String?
 }

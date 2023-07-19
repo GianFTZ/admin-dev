@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Logger, NotFoundException, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { CompanyService } from '../services';
-import { CreateCompanyDto, InviteCompanyDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
+import { AssignRoleDto, CreateCompanyDto, CreateRoleDto, DeleteRoleDto, InviteCompanyDto, UpdateRoleNameDto, UpdateRolePermissonsDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
 import { NotFoundError } from 'rxjs';
 
 
@@ -82,7 +82,7 @@ export class CompanyController {
 
   @Post("/collaborators/pending")
   public async getPendingCollaborators(@Body() dto: getCollaboratorDto, @Res() res: Response) {
-    const colaborators = await this.companyService.getCollaborators(dto)
+    const colaborators = await this.companyService.getPendingCollaborators(dto)
     if(colaborators.length === 0) {
       res.status(HttpStatus.NOT_FOUND).json({
         message: "No colaborators found"
@@ -104,20 +104,32 @@ export class CompanyController {
   }
 
   @Delete("/collaborators/remove")
-  public async removeCollaborators(@Body() dto: removeCollaboratorDto, @Res() res: Response) { 
-    const deletedColaborator = await this.companyService.removeCollaborators(dto)
-    if (deletedColaborator.length === 0) {
-      res.status(HttpStatus.BAD_REQUEST).json({
-        message: "Something went wrong while trying to remove colaborator"
-      })
-    }
-    else if (deletedColaborator instanceof NotFoundException) {
-      res.status(HttpStatus.NOT_FOUND).json({
-        message: "Colaborator notfound in database to remaove"
-      })
-    }
-    else { 
-      res.status(HttpStatus.OK).json(`Colaborator ${deletedColaborator[0].name} removed successfully`)
-    }
+  public async removeCollaborators(@Body() dto: removeCollaboratorDto) { 
+    return await this.companyService.removeCollaborators(dto)
+  }
+
+  @Post("collaborators/roles/create")
+  public async createRole(@Body() dto: CreateRoleDto) {
+    return await this.companyService.createRole(dto)
+  }
+
+  @Post("collaborators/roles/assign")
+  public async updateCollaboratorsRole(@Body() dto: AssignRoleDto){
+    return await this.companyService.assignRole(dto)
+  }
+
+  @Post("collaborators/roles/permissions")
+  public async updateRolePermissons(@Body() dto: UpdateRolePermissonsDto){
+    return await this.companyService.updateRolePermissions(dto)
+  }
+
+  @Post("collaborators/roles/name")
+  public async updateRoleName(@Body() dto: UpdateRoleNameDto){
+    return await this.companyService.updateRoleName(dto)
+  }
+
+  @Delete("collaborators/roles")
+  public async deleteRole(@Body() dto: DeleteRoleDto){
+    return await this.companyService.deleteRole(dto)
   }
 }
