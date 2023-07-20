@@ -53,6 +53,7 @@ model Role {
   Enterprise    Enterprise?  @relation(fields: [enterpriseId], references: [id])
   enterpriseId  String?
   status        Boolean
+  createdAt     DateTime     @default(now()) @map("created_at")
   createdBy     String
 }
 
