@@ -410,29 +410,6 @@ export class CompanyService {
   }
 
   public async updateRolePermissions(dto: UpdateRolePermissonsDto) {
-    // dto.permissionsGroup.map(async permissionGroup => {
-    //   return await this.prisma.permissionGroup.update({
-    //     where: {
-    //       id: permissionGroup.id
-    //     },
-    //     data: {
-    //       active: permissionGroup.active,
-    //       permissions: {
-    //         updateMany: {
-    //           // where: permissionGroup.permissions.map(permission => {
-    //           //   return {id: permission.id}
-    //           // }),
-    //           where: {
-
-    //           },
-    //           data: {
-    //             active: true
-    //           }
-    //         }
-    //       }
-    //     }
-    //   })
-    // })
     const transaction = await this.prisma.$transaction(
       dto.permissionsGroup.map(permissionGroup => {
         const a = this.prisma.permissionGroup.update({
@@ -461,12 +438,6 @@ export class CompanyService {
       })
     )
     return transaction
-    // Logger.log(dto.permissionsGroup.map(permissionGroup => {
-    //   return permissionGroup.permissions.map(permission => {
-    //     return {active: permission.active}
-    //   })
-    // }))
-
   }
 
   public async updateRoleStatus(dto: UpdateRoleStatusDto) {
