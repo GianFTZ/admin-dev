@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Logger, NotFoundException, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { CompanyService } from '../services';
-import { AssignRoleDto, CreateCompanyDto, CreateRoleDto, DeleteRoleDto, GetRoleDto, InviteCompanyDto, UpdateRoleNameDto, UpdateRolePermissonsDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
+import { AssignRoleDto, CreateCompanyDto, CreateRoleDto, DeleteRoleDto, GetRoleDto, InviteCompanyDto, UpdateRoleNameDto, UpdateRolePermissonsDto, UpdateRoleStatusDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
 import { NotFoundError } from 'rxjs';
 
 
@@ -109,15 +109,15 @@ export class CompanyController {
     return await this.companyService.createRole(dto)
   }
 
-  @Post("/roles/assign")
-  public async updateCollaboratorsRole(@Body() dto: AssignRoleDto){
-    return await this.companyService.assignRole(dto)
-  }
+  // @Post("/roles/assign")
+  // public async updateCollaboratorsRole(@Body() dto: AssignRoleDto){
+  //   return await this.companyService.assignRole(dto)
+  // }
 
-  @Post("/roles/permissions")
-  public async updateRolePermissons(@Body() dto: UpdateRolePermissonsDto){
-    return await this.companyService.updateRolePermissions(dto)
-  }
+  // @Post("/roles/permissions")
+  // public async updateRolePermissons(@Body() dto: UpdateRolePermissonsDto){
+  //   return await this.companyService.updateRolePermissions(dto)
+  // }
 
   @Post("/roles/name")
   public async updateRoleName(@Body() dto: UpdateRoleNameDto){
@@ -132,5 +132,10 @@ export class CompanyController {
   @Post("/roles")
   public async getRoles(@Body() dto: GetRoleDto){
     return await this.companyService.getRoles(dto)
+  }
+
+  @Post("/roles/status")
+  public async updateRoles(@Body() dto: UpdateRoleStatusDto){
+    return await this.companyService.updateRoleStatus(dto)
   }
 }

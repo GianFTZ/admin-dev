@@ -83,3 +83,16 @@ export class GetRoleDto {
   @IsNotEmpty()
   companyName: string
 }
+
+export class UpdateRoleStatusDto {
+  @IsString()
+  @IsNotEmpty()
+  roleName: string
+
+  @IsString()
+  @IsNotEmpty()
+  companyName: string
+
+  @IsBoolean()
+  status: boolean
+}

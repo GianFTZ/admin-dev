@@ -28,10 +28,11 @@ model Colaborator {
   id           String      @id @default(uuid())
   name         String
   email        String
-  roles        Role[]
+  role         Role?       @relation(fields: [roleId], references: [id])
   Enterprise   Enterprise? @relation(fields: [enterpriseId], references: [id])
   invitedAt    DateTime    @default(now()) @map("invited_at")
   enterpriseId String?
+  roleId       String?
 }
 
 model PendingColaborator {
@@ -45,16 +46,34 @@ model PendingColaborator {
 }
 
 model Role {
-  id            String       @id @default(uuid())
-  name          String
-  Colaborator   Colaborator? @relation(fields: [colaboratorId], references: [id])
-  colaboratorId String?
-  permissions   String[]
-  Enterprise    Enterprise?  @relation(fields: [enterpriseId], references: [id])
-  enterpriseId  String?
-  status        Boolean
-  createdAt     DateTime     @default(now()) @map("created_at")
-  createdBy     String
+  id               String            @id @default(uuid())
+  name             String
+  users            Int               @default(0)
+  colaboratorId    String?
+  permissionsGroup PermissionGroup[]
+  Enterprise       Enterprise?       @relation(fields: [enterpriseId], references: [id])
+  enterpriseId     String?
+  status           Boolean           @default(false)
+  createdAt        DateTime          @default(now()) @map("created_at")
+  createdBy        String            @default("root")
+  Colaborator      Colaborator[]
 }
 
+model PermissionGroup {
+  id          String        @id @default(uuid())
+  label       String
+  active      Boolean
+  permissions Permissions[]
+  Role        Role?         @relation(fields: [roleId], references: [id])
+  roleId      String?
+}
 
+model Permissions {
+  id                String           @id @default(uuid())
+  label             String
+  description       String
+  active            Boolean
+  action            String
+  PermissionGroup   PermissionGroup? @relation(fields: [permissionGroupId], references: [id])
+  permissionGroupId String?
+}

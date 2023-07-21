@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundEx
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtService } from "@nestjs/jwt";
 import axios from 'axios'
-import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto, GetRoleDto } from "../models";
+import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto, GetRoleDto, UpdateRoleStatusDto } from "../models";
 import { PrismaService } from "../../infra";
 import { transporter } from "../../../common";
 import { randomUUID } from "node:crypto";
@@ -232,7 +232,11 @@ export class CompanyService {
         roles: {
           create: {
             name: dto.name,
-            permissions: dto.permissions,
+            permissionsGroup: {
+              connect: {
+                id: "default"
+              }
+            }
           }
         }
       },
@@ -242,50 +246,6 @@ export class CompanyService {
     })
   }
 
-  public async updateRolePermissions(dto: UpdateRolePermissonsDto) {
-    return await this.prisma.enterprise.update({
-      where: {
-        name: dto.companyName
-      },
-      data: {
-        roles: {
-          update: {
-            where: {
-              id: (await this.prisma.role.findFirst({
-                where: {
-                  Enterprise: {
-                    name: dto.companyName
-                  },
-                  AND: {
-                    name: dto.roleName
-                  }
-                },
-                select: {
-                  id: true
-                }
-              })).id
-            },
-            data: {
-              permissions: {
-                set: dto.permissions
-              }
-            }
-          }
-        }
-      },
-      select: {
-        roles: {
-          where: {
-            name: dto.roleName
-          },
-          select: {
-            name: true,
-            permissions: true
-          }
-        }
-      }
-    })
-  }
 
   public async updateRoleName(dto: UpdateRoleNameDto) {
     return await this.prisma.enterprise.update({
@@ -331,63 +291,120 @@ export class CompanyService {
     })
   }
 
-  public async assignRole(dto: AssignRoleDto) {
-    return await this.prisma.enterprise.update({
-      where: {
-        name: dto.companyName
-      },
-      data: {
-        colaborators: {
-          update: {
-            where: {
-              id: (await this.prisma.colaborator.findFirst({
-                where: {
-                  Enterprise: {
-                    name: dto.companyName
-                  },
-                  AND: {
-                    name: dto.collaboratorName
-                  }
-                },
-                select: {
-                  id: true
-                }
-              })).id
-            },
-            data: {
-              roles: {
-                set: {
-                  id: (await this.prisma.role.findFirst({
-                    where: {
-                      Enterprise: {
-                        name: dto.companyName
-                      },
-                      AND: {
-                        name: dto.roleName
-                      },
-                    },
-                    select: {
-                      id: true
-                    }
-                  })).id
-                },
-              }
-            }
-          }
-        }
-      },
-      select: {
-        colaborators: {
-          where: {
-            name: dto.collaboratorName
-          },
-          select: {
-            roles: true
-          }
-        }
-      }
-    })
-  }
+  // public async assignRole(dto: AssignRoleDto) {
+  //   Logger.log((await this.prisma.colaborator.findMany({
+  //     where: {
+  //       Enterprise: {
+  //         name: dto.companyName
+  //       },
+  //       AND: {
+  //         roles: {
+  //           every: {
+  //             name: dto.roleName
+  //           }
+  //         }
+  //       }
+  //     }
+  //   })))
+            
+  //   return await this.prisma.enterprise.update({
+  //     where: {
+  //       name: dto.companyName
+  //     },
+  //     data: {
+  //       colaborators: {
+  //         update: {
+  //           where: {
+  //             id: (await this.prisma.colaborator.findFirst({
+  //               where: {
+  //                 Enterprise: {
+  //                   name: dto.companyName
+  //                 },
+  //                 AND: {
+  //                   name: dto.collaboratorName
+  //                 }
+  //               },
+  //               select: {
+  //                 id: true
+  //               }
+  //             })).id
+  //           },
+  //           data: {
+  //             roles: {
+  //               set: {
+  //                 id: (await this.prisma.role.findFirst({
+  //                   where: {
+  //                     Enterprise: {
+  //                       name: dto.companyName
+  //                     },
+  //                     AND: {
+  //                       name: dto.roleName
+  //                     },
+  //                   },
+  //                   select: {
+  //                     id: true
+  //                   }
+  //                 })).id
+  //               },
+  //             }
+  //           }
+  //         }
+  //       },
+  //       roles: {
+  //         update: {
+  //           where: {
+  //             id: (await this.prisma.role.findFirst({
+  //               where: {
+  //                 Enterprise: {
+  //                   name: dto.companyName
+  //                 },
+  //                 AND: {
+  //                   name: dto.roleName
+  //                 }
+  //               },
+  //               select: {
+  //                 id: true
+  //               }
+  //             })).id
+  //           },
+  //           data: {
+  //             // users: {
+  //             //   set: (await this.prisma.enterprise.findFirst({
+  //             //     where: {
+  //             //       name: dto.companyName
+  //             //     },
+  //             //     select: {
+  //             //       colaborators: {
+  //             //         where: {
+  //             //           roles: {
+  //             //             every: {
+  //             //               name: dto.roleName
+  //             //             }
+  //             //           }
+  //             //         },
+  //             //         select: {
+  //             //           _count: true
+  //             //         }
+  //             //       }
+  //             //     }
+  //             //   })).colaborators["_count"].roles
+  //             // }
+  //           }
+  //         }
+  //       }
+  //     },
+  //     select: {
+  //       colaborators: {
+  //         where: {
+  //           name: dto.collaboratorName
+  //         },
+  //         select: {
+  //           roles: true
+  //         }
+  //       }
+  //     }
+  //   })
+  // }
 
   public async deleteRole(dto: DeleteRoleDto) {
     return await this.prisma.enterprise.update({
@@ -426,6 +443,47 @@ export class CompanyService {
       },
       select: {
         roles: true
+      }
+    })
+  }
+
+  public async updateRoleStatus(dto: UpdateRoleStatusDto) {
+    return await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        roles: {
+          update: {
+            where: {
+              id: (await this.prisma.role.findFirst({
+                where: {
+                  Enterprise: {
+                    name: dto.companyName
+                  },
+                  AND: {
+                    name: dto.roleName
+                  }
+                },
+                select: {
+                  id: true
+                }
+              })).id
+            },
+            data: {
+              status: {
+                set: dto.status
+              }
+            }
+          }
+        }
+      },
+      select: {
+        roles: {
+          where: {
+            name: dto.roleName
+          }
+        }
       }
     })
   }
