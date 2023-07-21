@@ -119,23 +119,23 @@ export class CompanyController {
   //   return await this.companyService.updateRolePermissions(dto)
   // }
 
-  @Post("/roles/name")
-  public async updateRoleName(@Body() dto: UpdateRoleNameDto){
-    return await this.companyService.updateRoleName(dto)
-  }
+  // @Post("/roles/name")
+  // public async updateRoleName(@Body() dto: UpdateRoleNameDto){
+  //   return await this.companyService.updateRoleName(dto)
+  // }
 
-  @Delete("/roles")
-  public async deleteRole(@Body() dto: DeleteRoleDto){
-    return await this.companyService.deleteRole(dto)
-  }
+  // @Delete("/roles")
+  // public async deleteRole(@Body() dto: DeleteRoleDto){
+  //   return await this.companyService.deleteRole(dto)
+  // }
 
-  @Post("/roles")
-  public async getRoles(@Body() dto: GetRoleDto){
-    return await this.companyService.getRoles(dto)
-  }
+  // @Post("/roles")
+  // public async getRoles(@Body() dto: GetRoleDto){
+  //   return await this.companyService.getRoles(dto)
+  // }
 
-  @Post("/roles/status")
-  public async updateRoles(@Body() dto: UpdateRoleStatusDto){
-    return await this.companyService.updateRoleStatus(dto)
-  }
+  // @Post("/roles/status")
+  // public async updateRoles(@Body() dto: UpdateRoleStatusDto){
+  //   return await this.companyService.updateRoleStatus(dto)
+  // }
 }
