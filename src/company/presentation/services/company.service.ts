@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundEx
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtService } from "@nestjs/jwt";
 import axios from 'axios'
-import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto, GetRoleDto, UpdateRoleStatusDto } from "../models";
+import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto, GetRoleDto, UpdateRoleStatusDto, deletePendingCollaboratorDto } from "../models";
 import { PrismaService } from "../../infra";
 import { transporter } from "../../../common";
 import { randomUUID } from "node:crypto";
@@ -34,7 +34,8 @@ export class CompanyService {
             name: company.name
           }
         },
-        email: company.email
+        email: company.email,
+        link: `${process.env.OUR_URL}/invite?token=${token}`
       }
     })
     Logger.log(await this.prisma.pendingColaborator.findMany())
@@ -175,6 +176,31 @@ export class CompanyService {
       },
       select: {
         pendingColaborators: true
+      }
+    })
+  }
+
+  public async deletePendingCollaborator(dto: deletePendingCollaboratorDto) {
+    return await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        pendingColaborators: {
+          delete: {
+            id: (await this.prisma.pendingColaborator.findFirst({
+              where: {
+                email: dto.email
+              },
+              select: {
+                id: true
+              }
+            })).id
+          }
+        }
+      },
+      select: {
+        registration: true
       }
     })
   }

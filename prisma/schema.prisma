@@ -41,6 +41,7 @@ model PendingColaborator {
   Enterprise   Enterprise? @relation(fields: [enterpriseId], references: [id])
   enterpriseId String?
   invitedAt    DateTime    @default(now()) @map("invited_at")
+  link         String
 
   @@map("pending_colaborator")
 }

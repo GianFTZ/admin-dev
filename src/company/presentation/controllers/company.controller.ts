@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Logger, NotFoundException, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { CompanyService } from '../services';
-import { AssignRoleDto, CreateCompanyDto, CreateRoleDto, DeleteRoleDto, GetRoleDto, GetRoleGroupDto, InviteCompanyDto, UpdateRoleNameDto, UpdateRolePermissonsDto, UpdateRoleStatusDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
+import { AssignRoleDto, CreateCompanyDto, CreateRoleDto, DeleteRoleDto, GetRoleDto, GetRoleGroupDto, InviteCompanyDto, UpdateRoleNameDto, UpdateRolePermissonsDto, UpdateRoleStatusDto, deletePendingCollaboratorDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
 import { NotFoundError } from 'rxjs';
 
 
@@ -102,6 +102,11 @@ export class CompanyController {
   @Delete("/collaborators/remove")
   public async removeCollaborators(@Body() dto: removeCollaboratorDto) { 
     return await this.companyService.removeCollaborators(dto)
+  }
+
+  @Delete("/collaborators/pending/remove")
+  public async removePendingCollaborator(@Body() dto: deletePendingCollaboratorDto) { 
+    return await this.companyService.deletePendingCollaborator(dto)
   }
 
   @Post("/roles/create")

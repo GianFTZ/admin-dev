@@ -5,6 +5,14 @@ export class getCollaboratorDto {
   public companyName: string
 }
 
+export class deletePendingCollaboratorDto {
+  @IsString()
+  public companyName: string
+
+  @IsString()
+  public email: string
+}
+
 
 export class filterCollaboratorDto {
   @IsString()
