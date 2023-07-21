@@ -478,4 +478,21 @@ export class CompanyService {
       }
     })
   }
+
+  public async getRoleGroup(dto: GetRoleDto) {
+    return await this.prisma.role.findFirst({
+      where: {
+        Enterprise: {
+          name: dto.companyName
+        }
+      }, 
+      select: {
+        permissionsGroup: {
+          include: {
+            permissions: true
+          }
+        }
+      }
+    })
+  }
 }

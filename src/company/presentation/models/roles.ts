@@ -101,3 +101,9 @@ export class UpdateRoleStatusDto {
   @IsBoolean()
   status: boolean
 }
+
+export class GetRoleGroupDto {
+  @IsString()
+  @IsNotEmpty()
+  companyName: string
+}
