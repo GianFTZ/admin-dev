@@ -23,14 +23,19 @@ export class UpdateRolePermissonsDto {
   @IsNotEmpty()
   roleName: string
 
-  @IsArray()
-  @IsNotEmpty()
-  @Type(() => String)
-  permissions: string[]
+  // @IsArray()
+  // @IsNotEmpty()
+  // @Type(() => String)
+  // permissionGroupId: string[]
 
   @IsString()
   @IsNotEmpty()
   companyName: string
+
+
+  @IsArray()
+  @IsNotEmpty()
+  permissionsGroup: any[]
 }
 
 export class UpdateRoleNameDto {

@@ -1,0 +1,328 @@
+{
+  "roles": [
+      {
+          "id": "default",
+          "name": "default",
+          "users": 0,
+          "colaboratorId": null,
+          "enterpriseId": "default",
+          "status": false,
+          "createdAt": "2023-07-21T14:04:54.134Z",
+          "createdBy": "root",
+          "permissionsGroup": [
+              {
+                  "id": "default",
+                  "label": "User management",
+                  "active": true,
+                  "roleId": null,
+                  "permissions": [
+                      {
+                          "id": "9fc29175-01ed-47fc-9a8e-d74edac1212d",
+                          "label": "Invite users",
+                          "description": "Ability to invite new users",
+                          "active": true,
+                          "action": "add.invite.user",
+                          "permissionGroupId": "default"
+                      },
+                      {
+                          "id": "59f3aa41-66d0-499d-97ad-32f1d26a0977",
+                          "label": "Promote users",
+                          "description": "Ability to promote users",
+                          "active": true,
+                          "action": "add.promote.user",
+                          "permissionGroupId": "default"
+                      },
+                      {
+                          "id": "9f4d016d-e230-4557-bfb2-aa1edc8f17fb",
+                          "label": "Demote users",
+                          "description": "Ability to demote users",
+                          "active": true,
+                          "action": "add.demote.user",
+                          "permissionGroupId": "default"
+                      },
+                      {
+                          "id": "e9b636e1-c851-4fc2-a964-c04d55cc4698",
+                          "label": "Remove users",
+                          "description": "Ability to remove users",
+                          "active": true,
+                          "action": "add.remove.user",
+                          "permissionGroupId": "default"
+                      }
+                  ]
+              },
+              {
+                  "id": "default2",
+                  "label": "Enterprise management",
+                  "active": true,
+                  "roleId": null,
+                  "permissions": [
+                      {
+                          "id": "a4973d94-ed2d-454c-8e0d-b7ad2069defd",
+                          "label": "Edit business name",
+                          "description": "Ability to change enterprise s name",
+                          "active": false,
+                          "action": "add.editname.business",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "4879bc4e-05ce-4a56-955e-63594aad988b",
+                          "label": "Update logo",
+                          "description": "Ability to change enterprise s logotype",
+                          "active": false,
+                          "action": "add.updatelogo.business",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "2b66149e-1d54-4b5a-b659-925de7f38ff9",
+                          "label": "Delete enterprise",
+                          "description": "Ability to delete enterprise",
+                          "active": false,
+                          "action": "add.delete.business",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "19611b10-4336-4122-8343-de378b18db7d",
+                          "label": "Create roles",
+                          "description": "Ability to create roles",
+                          "active": true,
+                          "action": "add.create.roles",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "2908aa63-e4ba-4e0e-9e19-d02c6703f0f4",
+                          "label": "Edit roles",
+                          "description": "Ability to edit user role permissions",
+                          "active": true,
+                          "action": "add.edit.roles",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "7031e089-3ab5-4c07-9e94-aa9e201dc4a6",
+                          "label": "Delete roles",
+                          "description": "Ability to delete roles",
+                          "active": true,
+                          "action": "add.delete.roles",
+                          "permissionGroupId": "default2"
+                      }
+                  ]
+              }
+          ]
+      },
+      {
+          "id": "2a724a2a-699c-4886-9836-8f53ba32d73f",
+          "name": "clerico2",
+          "users": 0,
+          "colaboratorId": null,
+          "enterpriseId": "default",
+          "status": false,
+          "createdAt": "2023-07-21T14:05:32.833Z",
+          "createdBy": "root",
+          "permissionsGroup": [
+              {
+                  "id": "default",
+                  "label": "User management",
+                  "active": true,
+                  "roleId": null,
+                  "permissions": [
+                      {
+                          "id": "9fc29175-01ed-47fc-9a8e-d74edac1212d",
+                          "label": "Invite users",
+                          "description": "Ability to invite new users",
+                          "active": true,
+                          "action": "add.invite.user",
+                          "permissionGroupId": "default"
+                      },
+                      {
+                          "id": "59f3aa41-66d0-499d-97ad-32f1d26a0977",
+                          "label": "Promote users",
+                          "description": "Ability to promote users",
+                          "active": true,
+                          "action": "add.promote.user",
+                          "permissionGroupId": "default"
+                      },
+                      {
+                          "id": "9f4d016d-e230-4557-bfb2-aa1edc8f17fb",
+                          "label": "Demote users",
+                          "description": "Ability to demote users",
+                          "active": true,
+                          "action": "add.demote.user",
+                          "permissionGroupId": "default"
+                      },
+                      {
+                          "id": "e9b636e1-c851-4fc2-a964-c04d55cc4698",
+                          "label": "Remove users",
+                          "description": "Ability to remove users",
+                          "active": true,
+                          "action": "add.remove.user",
+                          "permissionGroupId": "default"
+                      }
+                  ]
+              },
+              {
+                  "id": "default2",
+                  "label": "Enterprise management",
+                  "active": true,
+                  "roleId": null,
+                  "permissions": [
+                      {
+                          "id": "a4973d94-ed2d-454c-8e0d-b7ad2069defd",
+                          "label": "Edit business name",
+                          "description": "Ability to change enterprise s name",
+                          "active": false,
+                          "action": "add.editname.business",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "4879bc4e-05ce-4a56-955e-63594aad988b",
+                          "label": "Update logo",
+                          "description": "Ability to change enterprise s logotype",
+                          "active": false,
+                          "action": "add.updatelogo.business",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "2b66149e-1d54-4b5a-b659-925de7f38ff9",
+                          "label": "Delete enterprise",
+                          "description": "Ability to delete enterprise",
+                          "active": false,
+                          "action": "add.delete.business",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "19611b10-4336-4122-8343-de378b18db7d",
+                          "label": "Create roles",
+                          "description": "Ability to create roles",
+                          "active": true,
+                          "action": "add.create.roles",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "2908aa63-e4ba-4e0e-9e19-d02c6703f0f4",
+                          "label": "Edit roles",
+                          "description": "Ability to edit user role permissions",
+                          "active": true,
+                          "action": "add.edit.roles",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "7031e089-3ab5-4c07-9e94-aa9e201dc4a6",
+                          "label": "Delete roles",
+                          "description": "Ability to delete roles",
+                          "active": true,
+                          "action": "add.delete.roles",
+                          "permissionGroupId": "default2"
+                      }
+                  ]
+              }
+          ]
+      },
+      {
+          "id": "1b240e7b-a60e-45c6-96e4-83be9e2649e8",
+          "name": "assassin",
+          "users": 0,
+          "colaboratorId": null,
+          "enterpriseId": "default",
+          "status": true,
+          "createdAt": "2023-07-21T14:05:36.645Z",
+          "createdBy": "root",
+          "permissionsGroup": [
+              {
+                  "id": "default",
+                  "label": "User management",
+                  "active": true,
+                  "roleId": null,
+                  "permissions": [
+                      {
+                          "id": "9fc29175-01ed-47fc-9a8e-d74edac1212d",
+                          "label": "Invite users",
+                          "description": "Ability to invite new users",
+                          "active": true,
+                          "action": "add.invite.user",
+                          "permissionGroupId": "default"
+                      },
+                      {
+                          "id": "59f3aa41-66d0-499d-97ad-32f1d26a0977",
+                          "label": "Promote users",
+                          "description": "Ability to promote users",
+                          "active": true,
+                          "action": "add.promote.user",
+                          "permissionGroupId": "default"
+                      },
+                      {
+                          "id": "9f4d016d-e230-4557-bfb2-aa1edc8f17fb",
+                          "label": "Demote users",
+                          "description": "Ability to demote users",
+                          "active": true,
+                          "action": "add.demote.user",
+                          "permissionGroupId": "default"
+                      },
+                      {
+                          "id": "e9b636e1-c851-4fc2-a964-c04d55cc4698",
+                          "label": "Remove users",
+                          "description": "Ability to remove users",
+                          "active": true,
+                          "action": "add.remove.user",
+                          "permissionGroupId": "default"
+                      }
+                  ]
+              },
+              {
+                  "id": "default2",
+                  "label": "Enterprise management",
+                  "active": true,
+                  "roleId": null,
+                  "permissions": [
+                      {
+                          "id": "a4973d94-ed2d-454c-8e0d-b7ad2069defd",
+                          "label": "Edit business name",
+                          "description": "Ability to change enterprise s name",
+                          "active": false,
+                          "action": "add.editname.business",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "4879bc4e-05ce-4a56-955e-63594aad988b",
+                          "label": "Update logo",
+                          "description": "Ability to change enterprise s logotype",
+                          "active": false,
+                          "action": "add.updatelogo.business",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "2b66149e-1d54-4b5a-b659-925de7f38ff9",
+                          "label": "Delete enterprise",
+                          "description": "Ability to delete enterprise",
+                          "active": false,
+                          "action": "add.delete.business",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "19611b10-4336-4122-8343-de378b18db7d",
+                          "label": "Create roles",
+                          "description": "Ability to create roles",
+                          "active": true,
+                          "action": "add.create.roles",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "2908aa63-e4ba-4e0e-9e19-d02c6703f0f4",
+                          "label": "Edit roles",
+                          "description": "Ability to edit user role permissions",
+                          "active": true,
+                          "action": "add.edit.roles",
+                          "permissionGroupId": "default2"
+                      },
+                      {
+                          "id": "7031e089-3ab5-4c07-9e94-aa9e201dc4a6",
+                          "label": "Delete roles",
+                          "description": "Ability to delete roles",
+                          "active": true,
+                          "action": "add.delete.roles",
+                          "permissionGroupId": "default2"
+                      }
+                  ]
+              }
+          ]
+      }
+  ]
+}
