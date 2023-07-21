@@ -64,7 +64,7 @@ model PermissionGroup {
   label       String
   active      Boolean
   permissions Permissions[]
-  Role        Role?         @relation(fields: [roleId], references: [id])
+  Role        Role[]
   roleId      String?
 }
 

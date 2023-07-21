@@ -35,6 +35,7 @@ async function main() {
         }
       },
       active: true,
+      id: "default",
       label: "User management",
       permissions: {
         createMany: {
@@ -78,6 +79,7 @@ async function main() {
         }
       },
       active: true,
+      id: "default2",
       label: "Enterprise management",
       permissions: {
         createMany: {
