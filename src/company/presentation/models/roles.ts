@@ -7,10 +7,10 @@ export class CreateRoleDto {
   @IsNotEmpty()
   name: string
 
-  @IsArray()
-  @IsNotEmpty()
-  @Type(() => String)
-  permissions: string[]
+  // @IsArray()
+  // @IsNotEmpty()
+  // @Type(() => String)
+  // permissions: string[]
 
   @IsString()
   @IsNotEmpty()

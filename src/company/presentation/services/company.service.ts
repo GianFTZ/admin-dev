@@ -134,7 +134,16 @@ export class CompanyService {
           nickname: true,
           registration: true,
           active: true,
-          colaborators: true
+          colaborators: true,
+          roles: {
+            include: {
+              permissionsGroup: {
+                include: {
+                  permissions: true
+                }
+              }
+            }  
+          }
         }
       })
       if (companies.length === 0) {
@@ -223,28 +232,41 @@ export class CompanyService {
     }
   }
 
-  // public async createRole(dto: CreateRoleDto) {
-  //   return await this.prisma.enterprise.update({
-  //     where: {
-  //       name: dto.companyName
-  //     },
-  //     data: {
-  //       roles: {
-  //         create: {
-  //           name: dto.name,
-  //           permissionsGroup: {
-  //             connect: {
-  //               id: "default"
-  //             }
-  //           }
-  //         }
-  //       }
-  //     },
-  //     select: {
-  //       roles: true
-  //     }
-  //   })
-  // }
+  public async createRole(dto: CreateRoleDto) {
+    return await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        roles: {
+          create: {
+            name: dto.name,
+            users: 0,
+            permissionsGroup: {
+              connectOrCreate: {
+                create: {
+                  id: "default",
+                  active: true,
+                  label: "test"
+                },
+                where: {
+                  id: "default"
+                }
+              },
+              
+            }
+          }
+        }
+      },
+      select: {
+        roles: {
+          include: {
+            permissionsGroup: true
+          }
+        }
+      }
+    })
+  }
 
 
   // public async updateRoleName(dto: UpdateRoleNameDto) {
