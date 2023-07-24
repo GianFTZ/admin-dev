@@ -88,6 +88,7 @@ export class CompanyController {
 
   }
 
+
   @Post("/collaborators/filter")
   public async getCollaboratorsFilter(@Body() dto: filterCollaboratorDto, @Res() res: Response){
     const colaboratorsFiltered = await this.companyService.filterCollaborators(dto)
@@ -122,6 +123,11 @@ export class CompanyController {
   @Post("/roles/permissions")
   public async updateRolePermissons(@Body() dto: UpdateRolePermissonsDto){
     return await this.companyService.updateRolePermissions(dto)
+  }
+
+  @Post("/roles/test")
+  public async test(@Body() dto: UpdateRolePermissonsDto){
+    return await this.companyService.teste(dto)
   }
 
   @Post("/roles/name")

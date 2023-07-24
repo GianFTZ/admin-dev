@@ -143,7 +143,7 @@ export class CompanyService {
                   permissions: true
                 }
               }
-            }  
+            }
           }
         }
       })
@@ -269,7 +269,7 @@ export class CompanyService {
             name: dto.name,
             users: 0,
             permissionsGroup: {
-              connect: [{id: "default"}, {id: "default2"}]
+              connect: [{ id: "default" }, { id: "default2" }]
             }
           }
         }
@@ -368,7 +368,7 @@ export class CompanyService {
             }
           }
         }
-      }, 
+      },
       select: {
         colaborators: {
           where: {
@@ -424,6 +424,7 @@ export class CompanyService {
       select: {
         roles: {
           select: {
+            id: true,
             users: true,
             status: true,
             name: true,
@@ -436,6 +437,7 @@ export class CompanyService {
   }
 
   public async updateRolePermissions(dto: UpdateRolePermissonsDto) {
+    Logger.log({ a: "oi" })
     const transaction = await this.prisma.$transaction(
       dto.permissionsGroup.map(permissionGroup => {
         const a = this.prisma.permissionGroup.update({
@@ -447,22 +449,35 @@ export class CompanyService {
             label: permissionGroup.label,
           }
         })
-        permissionGroup.permissions.map(permission => {
-          return this.prisma.permissions.update({
-            where: {
-              id: permission.id
-            },
-            data: {
-              action: permission.action,
-              active: permission.active,
-              description: permission.description,
-              label: permission.label
-            }
-          })
-        })
+        // permissionGroup.permissions.map(permission => {
+        //   Logger.log( this.prisma.permissionGroup.update({
+        //     where: {
+        //       id: permissionGroup.id
+        //     },
+        //     data: {
+        //       permissions: {
+        //         update: {
+        //           where: {
+        //             id: permission.id
+        //           },
+        //           data: {
+        //             action: permission.action,
+        //             active: permission.active,
+        //             description: permission.description,
+        //             label: permission.label
+        //           }
+        //         }
+        //       }
+        //     },
+        //     select: {
+        //       permissions: true
+        //     }
+        //   }))
+        // })
         return a
       })
     )
+    Logger.log({ transaction })
     return transaction
   }
 
@@ -513,9 +528,12 @@ export class CompanyService {
         Enterprise: {
           name: dto.companyName
         }
-      }, 
+      },
       select: {
         permissionsGroup: {
+          where: {
+            id: "default"
+          },
           include: {
             permissions: true
           }
@@ -548,5 +566,127 @@ export class CompanyService {
         createdBy: true
       }
     })
+  }
+
+  public async teste(dto: UpdateRolePermissonsDto) {
+    const roleGroup = await this.prisma.role.findFirst({
+      where: {
+        Enterprise: {
+          name: dto.companyName
+        }
+      },
+      select: {
+        id: true,
+        permissionsGroup: {
+          include: {
+            permissions: true
+          }
+        }
+      }
+    })
+    roleGroup.permissionsGroup.map(async (e, i) => {
+      const result = await this.prisma.role.update({
+        where: {
+          id: roleGroup.id
+        },
+        data: {
+          permissionsGroup: {
+            update: {
+              where: {
+                id: e.id
+              },
+              data: {
+                active: e.active
+              }
+            }
+          }
+        },
+        select: {
+          permissionsGroup: {
+            include: {
+              permissions: true
+            }
+          }
+        }
+      })
+      result.permissionsGroup[i].permissions.map(async permission => {
+        return await this.prisma.role.update({
+          where: {
+            id: roleGroup.id
+          },
+          data: {
+            permissionsGroup: {
+              update: {
+                where: {
+                  id: e.id
+                },
+                data: {
+                  permissions: {
+                    update: {
+                      where: {
+                        id: permission.id
+                      },
+                      data: {
+                        active: permission.active
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          select: {
+            permissionsGroup: {
+              include: {
+                permissions: true
+              }
+            }
+          }
+        })
+      })
+
+    })
+    // return permissionsGroups
+
+    //   await this.prisma.role.update({
+    //     where: {
+    //       id: (await this.prisma.role.findFirst({
+    //         where: {
+    //           name: dto.roleName
+    //         },
+    //         select: {
+    //           id: true
+    //         }
+    //       })).id
+    //     },
+    //     data: {
+    //       permissionsGroup: {
+    //         update: {
+    //           where: {
+    //             id: "default"
+    //           },
+    //           data: {
+    //             permissions: {
+    //               update: {
+    //                 where: {
+    //                   id: "17978e96-912f-45c6-bc81-13b0079dd717"
+    //                 },
+    //                 data: {
+    //                   active: true
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //       }
+    //     },
+    //     select: {
+    //       permissionsGroup: {
+    //         include: {
+    //           permissions: true
+    //         }
+    //       }
+    //     }
+    //   })
   }
 }
