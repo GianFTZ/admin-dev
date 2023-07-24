@@ -569,83 +569,170 @@ export class CompanyService {
   }
 
   public async teste(dto: UpdateRolePermissonsDto) {
-    const roleGroup = await this.prisma.role.findFirst({
-      where: {
-        Enterprise: {
-          name: dto.companyName
-        }
-      },
-      select: {
-        id: true,
-        permissionsGroup: {
-          include: {
-            permissions: true
-          }
-        }
+    
+    return (dto.permissionsGroup.map(pg => {
+      return {
+        permissions: pg.permissions
       }
-    })
-    roleGroup.permissionsGroup.map(async (e, i) => {
-      const result = await this.prisma.role.update({
+    })).map(pg => pg.permissions.map(p => {
+      return {
+        id: p.id,
+        permissionGroupId: p.permissionGroupId,
+        active: p.active
+      }
+    })).flat().map(async i => {
+      console.log( await this.prisma.permissions.update({
         where: {
-          id: roleGroup.id
+          id: (await this.prisma.permissions.findFirst({
+            where: {
+              permissionGroupId: i.permissionGroupId,
+              AND: {
+                id: i.id
+              }
+            },
+            select: {
+              id: true
+            }
+          })).id
         },
         data: {
-          permissionsGroup: {
-            update: {
-              where: {
-                id: e.id
-              },
-              data: {
-                active: e.active
-              }
-            }
-          }
+          active: i.active
         },
         select: {
-          permissionsGroup: {
-            include: {
-              permissions: true
-            }
-          }
+          id: true,
+          active: true,
+          permissionGroupId: true
         }
-      })
-      result.permissionsGroup[i].permissions.map(async permission => {
-        return await this.prisma.role.update({
-          where: {
-            id: roleGroup.id
-          },
-          data: {
-            permissionsGroup: {
-              update: {
-                where: {
-                  id: e.id
-                },
-                data: {
-                  permissions: {
-                    update: {
-                      where: {
-                        id: permission.id
-                      },
-                      data: {
-                        active: permission.active
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          select: {
-            permissionsGroup: {
-              include: {
-                permissions: true
-              }
-            }
-          }
-        })
-      })
-
+      }))
+      console.log("========================================")
     })
+    
+    //  where: {
+    //       permissionGroupId: i.permissionGroupId,
+    //       AND: {
+    //         id: i.id
+    //       }
+    //     },
+
+    // return await this.prisma.permissions.findFirst({
+    //   where: {
+    //     permissionGroupId: "default",
+    //     AND: {
+    //         id: "da9214f8-8d54-4450-a8df-cf24b26b0b7d"
+    //       }
+    //     }
+
+    //   }
+    // )
+    
+    // return this.prisma.permissionGroup.findFirst({
+    //   where: {
+    //     id: "default"
+    //   },
+    //   select: {
+    //     permissions: {
+    //       where: {
+    //         id: "da9214f8-8d54-4450-a8df-cf24b26b0b7d"
+    //       }
+    //     }
+    //   }
+    // })
+
+
+
+
+
+
+    // return await this.prisma.permissions.update({
+    //   where: {
+    //     id: "da9214f8-8d54-4450-a8df-cf24b26b0b7d"
+    //   },
+    //   data: {
+    //     active: true,
+    //   }
+    // })
+
+    
+    // const roleGroup = await this.prisma.role.findFirst({
+    //   where: {
+    //     Enterprise: {
+    //       name: dto.companyName
+    //     }
+    //   },
+    //   select: {
+    //     id: true,
+    //     permissionsGroup: {
+    //       include: {
+    //         permissions: true
+    //       }
+    //     }
+    //   }
+    // })
+    // roleGroup.permissionsGroup.map( pg => {
+    //   Logger.log(pg)
+    // })
+    // roleGroup.permissionsGroup.map(async (e, i) => {
+    //   const result = await this.prisma.role.update({
+    //     where: {
+    //       id: roleGroup.id
+    //     },
+    //     data: {
+    //       permissionsGroup: {
+    //         update: {
+    //           where: {
+    //             id: e.id
+    //           },
+    //           data: {
+    //             active: e.active
+    //           }
+    //         }
+    //       }
+    //     },
+    //     select: {
+    //       permissionsGroup: {
+    //         include: {
+    //           permissions: true
+    //         }
+    //       }
+    //     }
+    //   })
+    //   result.permissionsGroup[i].permissions.map(async permission => {
+    //     return await this.prisma.role.update({
+    //       where: {
+    //         id: roleGroup.id
+    //       },
+    //       data: {
+    //         permissionsGroup: {
+    //           update: {
+    //             where: {
+    //               id: e.id
+    //             },
+    //             data: {
+    //               permissions: {
+    //                 update: {
+    //                   where: {
+    //                     id: permission.id
+    //                   },
+    //                   data: {
+    //                     active: permission.active
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //       },
+    //       select: {
+    //         permissionsGroup: {
+    //           include: {
+    //             permissions: true
+    //           }
+    //         }
+    //       }
+    //     })
+    //   })
+
+    // })
     // return permissionsGroups
 
     //   await this.prisma.role.update({
