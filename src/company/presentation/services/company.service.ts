@@ -581,7 +581,7 @@ export class CompanyService {
         active: p.active
       }
     })).flat().map(async i => {
-      console.log( await this.prisma.permissions.update({
+      await this.prisma.permissions.update({
         where: {
           id: (await this.prisma.permissions.findFirst({
             where: {
@@ -603,8 +603,7 @@ export class CompanyService {
           active: true,
           permissionGroupId: true
         }
-      }))
-      console.log("========================================")
+      })
     })
     
     //  where: {

@@ -1,0 +1,56 @@
+{
+  "id": "default2",
+  "label": "Enterprise management",
+  "active": true,
+  "roleId": null,
+  "permissions": [
+    {
+      "id": "bdb9d43a-cda3-4eb3-817e-a593e708fc07",
+      "label": "Delete enterprise",
+      "description": "Ability to delete enterprise",
+      "active": false,
+      "action": "add.delete.business",
+      "permissionGroupId": "default2"
+    },
+    {
+      "id": "92c78122-3019-43b3-afd7-0d11c1775400",
+      "label": "Delete roles",
+      "description": "Ability to delete roles",
+      "active": true,
+      "action": "add.delete.roles",
+      "permissionGroupId": "default2"
+    },
+    {
+      "id": "bf616725-c66f-4dd1-80ab-9a6a210e7b14",
+      "label": "Edit roles",
+      "description": "Ability to edit user role permissions",
+      "active": true,
+      "action": "add.edit.roles",
+      "permissionGroupId": "default2"
+    },
+    {
+      "id": "bc7dc7d4-3d33-45d7-b5a6-32a3f11c3eb9",
+      "label": "Create roles",
+      "description": "Ability to create roles",
+      "active": true,
+      "action": "add.create.roles",
+      "permissionGroupId": "default2"
+    },
+    {
+      "id": "0d253bb4-79ee-4c07-bfae-ad15a0e3ecb4",
+      "label": "Edit business name",
+      "description": "Ability to change enterprise s name",
+      "active": false,
+      "action": "add.editname.business",
+      "permissionGroupId": "default2"
+    },
+    {
+      "id": "7d1f44db-dadb-4861-bf19-318300ca0e18",
+      "label": "Update logo",
+      "description": "Ability to change enterprise s logotype",
+      "active": false,
+      "action": "add.updatelogo.business",
+      "permissionGroupId": "default2"
+    }
+  ]
+}
