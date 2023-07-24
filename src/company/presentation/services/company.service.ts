@@ -423,13 +423,13 @@ export class CompanyService {
       },
       select: {
         roles: {
-          include: {
-            permissionsGroup: {
-              include: {
-                permissions: true
-              }
-            }
-          } 
+          select: {
+            users: true,
+            status: true,
+            name: true,
+            createdAt: true,
+            createdBy: true
+          }
         }
       }
     })
