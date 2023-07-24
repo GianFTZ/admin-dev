@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundEx
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtService } from "@nestjs/jwt";
 import axios from 'axios'
-import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto, GetRoleDto, UpdateRoleStatusDto, deletePendingCollaboratorDto } from "../models";
+import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto, GetRoleDto, UpdateRoleStatusDto, deletePendingCollaboratorDto, GetRoleById } from "../models";
 import { PrismaService } from "../../infra";
 import { transporter } from "../../../common";
 import { randomUUID } from "node:crypto";
@@ -520,6 +520,32 @@ export class CompanyService {
             permissions: true
           }
         }
+      }
+    })
+  }
+
+  public async getRoleId(dto: GetRoleById) {
+    return await this.prisma.role.findFirst({
+      where: {
+        Enterprise: {
+          name: dto.companyName
+        },
+        AND: {
+          id: dto.roleId
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        users: true,
+        permissionsGroup: {
+          include: {
+            permissions: true
+          }
+        },
+        status: true,
+        createdAt: true,
+        createdBy: true
       }
     })
   }

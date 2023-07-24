@@ -107,3 +107,13 @@ export class GetRoleGroupDto {
   @IsNotEmpty()
   companyName: string
 }
+
+export class GetRoleById {
+  @IsString()
+  @IsNotEmpty()
+  companyName: string
+
+  @IsString()
+  @IsNotEmpty()
+  roleId: string
+}
