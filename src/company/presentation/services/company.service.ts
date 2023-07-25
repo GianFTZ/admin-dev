@@ -569,26 +569,32 @@ export class CompanyService {
   }
 
   public async teste(dto: UpdateRolePermissonsDto) {
-  
       return await Promise.all(
-      dto.permissionsGroup.map(async (pg) => {
-        const permissions = await Promise.all(
+        dto.permissionsGroup.map(async (pg) => {
+          await this.prisma.permissionGroup.update({
+            where: {
+              id: pg.id
+            },
+            data: {
+              active: pg.active,
+            }
+          })
+          return await Promise.all(
           pg.permissions.map(async (p) => {
-            const existingPermission = await this.prisma.permissions.findFirst({
-              where: {
-                permissionGroupId: p.permissionGroupId,
-                AND: {
-                  id: p.id,
+              return await this.prisma.permissions.update({
+                where: {
+                  id: (await this.prisma.permissions.findFirst({
+                        where: {
+                          permissionGroupId: p.permissionGroupId,
+                          AND: {
+                            id: p.id,
+                          },
+                        },
+                        select: {
+                          id: true,
+                        },
+                      })).id
                 },
-              },
-              select: {
-                id: true,
-              },
-            });
-
-            if (existingPermission) {
-              const result = await this.prisma.permissions.update({
-                where: { id: existingPermission.id },
                 data: { active: p.active },
                 select: {
                   id: true,
@@ -596,185 +602,10 @@ export class CompanyService {
                   permissionGroupId: true,
                 },
               });
-
-              Logger.log(result);
-              return result;
             }
-          })
+          )
         );
-
-        return permissions;
       })
     );
-
-      // const permissionsGroups = await Promise.all(
-    //  where: {
-    //       permissionGroupId: i.permissionGroupId,
-    //       AND: {
-    //         id: i.id
-    //       }
-    //     },
-
-    // return await this.prisma.permissions.findFirst({
-    //   where: {
-    //     permissionGroupId: "default",
-    //     AND: {
-    //         id: "da9214f8-8d54-4450-a8df-cf24b26b0b7d"
-    //       }
-    //     }
-
-    //   }
-    // )
-    
-    // return this.prisma.permissionGroup.findFirst({
-    //   where: {
-    //     id: "default"
-    //   },
-    //   select: {
-    //     permissions: {
-    //       where: {
-    //         id: "da9214f8-8d54-4450-a8df-cf24b26b0b7d"
-    //       }
-    //     }
-    //   }
-    // })
-
-
-
-
-
-
-    // return await this.prisma.permissions.update({
-    //   where: {
-    //     id: "da9214f8-8d54-4450-a8df-cf24b26b0b7d"
-    //   },
-    //   data: {
-    //     active: true,
-    //   }
-    // })
-
-    
-    // const roleGroup = await this.prisma.role.findFirst({
-    //   where: {
-    //     Enterprise: {
-    //       name: dto.companyName
-    //     }
-    //   },
-    //   select: {
-    //     id: true,
-    //     permissionsGroup: {
-    //       include: {
-    //         permissions: true
-    //       }
-    //     }
-    //   }
-    // })
-    // roleGroup.permissionsGroup.map( pg => {
-    //   Logger.log(pg)
-    // })
-    // roleGroup.permissionsGroup.map(async (e, i) => {
-    //   const result = await this.prisma.role.update({
-    //     where: {
-    //       id: roleGroup.id
-    //     },
-    //     data: {
-    //       permissionsGroup: {
-    //         update: {
-    //           where: {
-    //             id: e.id
-    //           },
-    //           data: {
-    //             active: e.active
-    //           }
-    //         }
-    //       }
-    //     },
-    //     select: {
-    //       permissionsGroup: {
-    //         include: {
-    //           permissions: true
-    //         }
-    //       }
-    //     }
-    //   })
-    //   result.permissionsGroup[i].permissions.map(async permission => {
-    //     return await this.prisma.role.update({
-    //       where: {
-    //         id: roleGroup.id
-    //       },
-    //       data: {
-    //         permissionsGroup: {
-    //           update: {
-    //             where: {
-    //               id: e.id
-    //             },
-    //             data: {
-    //               permissions: {
-    //                 update: {
-    //                   where: {
-    //                     id: permission.id
-    //                   },
-    //                   data: {
-    //                     active: permission.active
-    //                   }
-    //                 }
-    //               }
-    //             }
-    //           }
-    //         }
-    //       },
-    //       select: {
-    //         permissionsGroup: {
-    //           include: {
-    //             permissions: true
-    //           }
-    //         }
-    //       }
-    //     })
-    //   })
-
-    // })
-    // return permissionsGroups
-
-    //   await this.prisma.role.update({
-    //     where: {
-    //       id: (await this.prisma.role.findFirst({
-    //         where: {
-    //           name: dto.roleName
-    //         },
-    //         select: {
-    //           id: true
-    //         }
-    //       })).id
-    //     },
-    //     data: {
-    //       permissionsGroup: {
-    //         update: {
-    //           where: {
-    //             id: "default"
-    //           },
-    //           data: {
-    //             permissions: {
-    //               update: {
-    //                 where: {
-    //                   id: "17978e96-912f-45c6-bc81-13b0079dd717"
-    //                 },
-    //                 data: {
-    //                   active: true
-    //                 }
-    //               }
-    //             }
-    //           }
-    //         }
-    //       }
-    //     },
-    //     select: {
-    //       permissionsGroup: {
-    //         include: {
-    //           permissions: true
-    //         }
-    //       }
-    //     }
-    //   })
   }
 }
