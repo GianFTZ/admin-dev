@@ -569,43 +569,45 @@ export class CompanyService {
   }
 
   public async teste(dto: UpdateRolePermissonsDto) {
-    
-    return (dto.permissionsGroup.map(pg => {
-      return {
-        permissions: pg.permissions
-      }
-    })).map(pg => pg.permissions.map(p => {
-      return {
-        id: p.id,
-        permissionGroupId: p.permissionGroupId,
-        active: p.active
-      }
-    })).flat().map(async i => {
-      await this.prisma.permissions.update({
-        where: {
-          id: (await this.prisma.permissions.findFirst({
-            where: {
-              permissionGroupId: i.permissionGroupId,
-              AND: {
-                id: i.id
-              }
-            },
-            select: {
-              id: true
+  
+      return await Promise.all(
+      dto.permissionsGroup.map(async (pg) => {
+        const permissions = await Promise.all(
+          pg.permissions.map(async (p) => {
+            const existingPermission = await this.prisma.permissions.findFirst({
+              where: {
+                permissionGroupId: p.permissionGroupId,
+                AND: {
+                  id: p.id,
+                },
+              },
+              select: {
+                id: true,
+              },
+            });
+
+            if (existingPermission) {
+              const result = await this.prisma.permissions.update({
+                where: { id: existingPermission.id },
+                data: { active: p.active },
+                select: {
+                  id: true,
+                  active: true,
+                  permissionGroupId: true,
+                },
+              });
+
+              Logger.log(result);
+              return result;
             }
-          })).id
-        },
-        data: {
-          active: i.active
-        },
-        select: {
-          id: true,
-          active: true,
-          permissionGroupId: true
-        }
+          })
+        );
+
+        return permissions;
       })
-    })
-    
+    );
+
+      // const permissionsGroups = await Promise.all(
     //  where: {
     //       permissionGroupId: i.permissionGroupId,
     //       AND: {
