@@ -573,9 +573,6 @@ export class CompanyService {
       },
       select: {
         permissionsGroup: {
-          where: {
-            id: "default"
-          },
           include: {
             permissions: true
           }
