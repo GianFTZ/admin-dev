@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundEx
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtService } from "@nestjs/jwt";
 import axios from 'axios'
-import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRolePermissonsDto, UpdateRoleNameDto, DeleteRoleDto, GetRoleDto, UpdateRoleStatusDto, deletePendingCollaboratorDto, GetRoleById } from "../models";
+import { InviteCompanyDto, CreateCompanyDto, filterCollaboratorDto, getCollaboratorDto, removeCollaboratorDto, CreateRoleDto, AssignRoleDto, UpdateRoleNameDto, DeleteRoleDto, GetRoleDto, UpdateRoleStatusDto, deletePendingCollaboratorDto, GetRoleById, UpdateRolePermissionsDto } from "../models";
 import { PrismaService } from "../../infra";
 import { transporter } from "../../../common";
 import { randomUUID } from "node:crypto";
@@ -436,50 +436,92 @@ export class CompanyService {
     })
   }
 
-  public async updateRolePermissions(dto: UpdateRolePermissonsDto) {
-    Logger.log({ a: "oi" })
-    const transaction = await this.prisma.$transaction(
-      dto.permissionsGroup.map(permissionGroup => {
-        const a = this.prisma.permissionGroup.update({
-          where: {
-            id: permissionGroup.id
-          },
-          data: {
-            active: permissionGroup.active,
-            label: permissionGroup.label,
+  public async updateRolePermissions(dto: UpdateRolePermissionsDto) {
+   await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        roles: {
+          update: {
+            where: {
+              id: (await this.prisma.role.findFirst({
+                where: {
+                  Enterprise: {
+                    name: dto.companyName
+                  },
+                  AND: {
+                    name: dto.oldName
+                  }
+                },
+                select: {
+                  id: true
+                }
+              })).id
+            },
+            data: {
+              name: {
+                set: dto.roleName
+              },
+              status: {
+                set: dto.status
+              }
+            }
           }
+        }
+      },
+      select: {
+        roles: {
+          where: {
+            name: dto.roleName
+          },
+          select: {
+            name: true
+          }
+        }
+      }
+    })
+    return await Promise.all(
+        dto.permissionsGroup.map(async (pg) => {
+          await this.prisma.permissionGroup.update({
+            where: {
+              id: pg.id
+            },
+            data: {
+              active: pg.active,
+            }
+          })
+          return await Promise.all(
+          pg.permissions.map(async (p) => {
+              return await this.prisma.permissions.update({
+                where: {
+                  id: (await this.prisma.permissions.findFirst({
+                        where: {
+                          permissionGroupId: p.permissionGroupId,
+                          AND: {
+                            id: p.id,
+                          },
+                        },
+                        select: {
+                          id: true,
+                        },
+                      })).id
+                },
+                data: { active: p.active },
+                select: {
+                  id: true,
+                  active: true,
+                  permissionGroupId: true,
+                },
+              });
+            }
+          )
+          );
         })
-        // permissionGroup.permissions.map(permission => {
-        //   Logger.log( this.prisma.permissionGroup.update({
-        //     where: {
-        //       id: permissionGroup.id
-        //     },
-        //     data: {
-        //       permissions: {
-        //         update: {
-        //           where: {
-        //             id: permission.id
-        //           },
-        //           data: {
-        //             action: permission.action,
-        //             active: permission.active,
-        //             description: permission.description,
-        //             label: permission.label
-        //           }
-        //         }
-        //       }
-        //     },
-        //     select: {
-        //       permissions: true
-        //     }
-        //   }))
-        // })
-        return a
-      })
-    )
-    Logger.log({ transaction })
-    return transaction
+        );
+        
   }
+  
 
   public async updateRoleStatus(dto: UpdateRoleStatusDto) {
     return await this.prisma.enterprise.update({
@@ -568,8 +610,52 @@ export class CompanyService {
     })
   }
 
-  public async teste(dto: UpdateRolePermissonsDto) {
-      return await Promise.all(
+  public async teste(dto: UpdateRolePermissionsDto) {
+    await this.prisma.enterprise.update({
+      where: {
+        name: dto.companyName
+      },
+      data: {
+        roles: {
+          update: {
+            where: {
+              id: (await this.prisma.role.findFirst({
+                where: {
+                  Enterprise: {
+                    name: dto.companyName
+                  },
+                  AND: {
+                    name: dto.oldName
+                  }
+                },
+                select: {
+                  id: true
+                }
+              })).id
+            },
+            data: {
+              name: {
+                set: dto.roleName
+              },
+              status: {
+                set: dto.status
+              }
+            }
+          }
+        }
+      },
+      select: {
+        roles: {
+          where: {
+            name: dto.roleName
+          },
+          select: {
+            name: true
+          }
+        }
+      }
+    })
+    return await Promise.all(
         dto.permissionsGroup.map(async (pg) => {
           await this.prisma.permissionGroup.update({
             where: {
@@ -604,8 +690,9 @@ export class CompanyService {
               });
             }
           )
+          );
+        })
         );
-      })
-    );
-  }
+        
+      }
 }

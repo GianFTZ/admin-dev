@@ -17,7 +17,7 @@ export class CreateRoleDto {
   companyName: string
 }
 
-export class UpdateRolePermissonsDto {
+export class UpdateRolePermissionsDto {
 
   @IsString()
   @IsNotEmpty()
@@ -28,11 +28,17 @@ export class UpdateRolePermissonsDto {
   // @Type(() => String)
   // permissionGroupId: string[]
 
+  @IsBoolean()
+  status: boolean
+
   @IsString()
   @IsNotEmpty()
   companyName: string
 
-
+  @IsString()
+  @IsNotEmpty()
+  oldName: string
+  
   @IsArray()
   @IsNotEmpty()
   permissionsGroup: any[]

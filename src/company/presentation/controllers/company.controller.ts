@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Logger, NotFoundException, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { CompanyService } from '../services';
-import { AssignRoleDto, CreateCompanyDto, CreateRoleDto, DeleteRoleDto, GetRoleById, GetRoleDto, GetRoleGroupDto, InviteCompanyDto, UpdateRoleNameDto, UpdateRolePermissonsDto, UpdateRoleStatusDto, deletePendingCollaboratorDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
+import { AssignRoleDto, CreateCompanyDto, CreateRoleDto, DeleteRoleDto, GetRoleById, GetRoleDto, GetRoleGroupDto, InviteCompanyDto, UpdateRoleNameDto, UpdateRolePermissionsDto, UpdateRoleStatusDto, deletePendingCollaboratorDto, filterCollaboratorDto,  getCollaboratorDto, removeCollaboratorDto } from '../models';
 import { NotFoundError } from 'rxjs';
 
 
@@ -121,12 +121,12 @@ export class CompanyController {
   }
 
   @Post("/roles/permissions")
-  public async updateRolePermissons(@Body() dto: UpdateRolePermissonsDto){
+  public async updateRolePermissons(@Body() dto: UpdateRolePermissionsDto){
     return await this.companyService.updateRolePermissions(dto)
   }
 
   @Post("/roles/test")
-  public async test(@Body() dto: UpdateRolePermissonsDto){
+  public async test(@Body() dto: UpdateRolePermissionsDto){
     return await this.companyService.teste(dto)
   }
 
