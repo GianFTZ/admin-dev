@@ -480,7 +480,7 @@ export class CompanyService {
           }
         }
       }
-    })
+   })
     return await Promise.all(
         dto.permissionsGroup.map(async (pg) => {
           await this.prisma.permissionGroup.update({
@@ -611,7 +611,7 @@ export class CompanyService {
   }
 
   public async teste(dto: UpdateRolePermissionsDto) {
-    await this.prisma.enterprise.update({
+   const result = await this.prisma.enterprise.update({
       where: {
         name: dto.companyName
       },
@@ -650,11 +650,13 @@ export class CompanyService {
             name: dto.roleName
           },
           select: {
-            name: true
+            name: true,
+            status: true
           }
         }
       }
-    })
+   })
+    console.log(result)
     return await Promise.all(
         dto.permissionsGroup.map(async (pg) => {
           await this.prisma.permissionGroup.update({
